@@ -1,4 +1,4 @@
-local QRCore = exports['qr-core']:GetCoreObject()
+local RSGCore = exports['rsg-core']:GetCoreObject()
 local miningstarted = false
 local mining
 
@@ -7,7 +7,7 @@ local mining
 -- mining locations
 Citizen.CreateThread(function()
     for mining, v in pairs(Config.MiningLocations) do
-        exports['qr-core']:createPrompt(v.location, v.coords, QRCore.Shared.Keybinds['J'], 'Start ' .. v.name, {
+        exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], 'Start ' .. v.name, {
             type = 'client',
             event = 'rsg-mining:client:StartMining',
         })
@@ -39,7 +39,7 @@ end)
 RegisterNetEvent('rsg-mining:client:StartMining')
 AddEventHandler('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
-    local hasItem = QRCore.Functions.HasItem('pickaxe', 1)
+    local hasItem = RSGCore.Functions.HasItem('pickaxe', 1)
     if miningstarted == false then
         if hasItem then
             local randomNumber = math.random(1,100)
@@ -56,9 +56,9 @@ AddEventHandler('rsg-mining:client:StartMining', function()
                 miningstarted = false
             end
         else
-            QRCore.Functions.Notify('you don\'t have a pickaxe!', 'error')
+            RSGCore.Functions.Notify('you don\'t have a pickaxe!', 'error')
         end
     else
-        QRCore.Functions.Notify('you are busy at the moment!', 'primary')
+        RSGCore.Functions.Notify('you are busy at the moment!', 'primary')
     end
 end)
