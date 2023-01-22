@@ -7,7 +7,7 @@ local mining
 -- mining locations
 Citizen.CreateThread(function()
     for mining, v in pairs(Config.MiningLocations) do
-        exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], 'Start ' .. v.name, {
+        exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], Lang:t('menu.start') .. v.name, {
             type = 'client',
             event = 'rsg-mining:client:StartMining',
         })
@@ -56,9 +56,9 @@ AddEventHandler('rsg-mining:client:StartMining', function()
                 miningstarted = false
             end
         else
-            RSGCore.Functions.Notify('you don\'t have a pickaxe!', 'error')
+            RSGCore.Functions.Notify(Lang:t('error.you_dont_have_pickaxe'), 'error')
         end
     else
-        RSGCore.Functions.Notify('you are busy at the moment!', 'primary')
+        RSGCore.Functions.Notify(Lang:t('primary.you_are_busy_the_moment'), 'primary')
     end
 end)

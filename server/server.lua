@@ -17,7 +17,7 @@ AddEventHandler('rsg-mining:server:giveMiningReward', function()
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
         Player.Functions.AddItem(item3, Config.SmallRewardAmount)
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
-        TriggerClientEvent('RSGCore:Notify', src, 'small haul time!', 'primary')
+        TriggerClientEvent('RSGCore:Notify', src, Lang:t('primary.small_haul_time'), 'primary')
     elseif chance >= 50 and chance <= 80 then -- medium reward
         local item1 = Config.MiningRewards[math.random(1, #Config.MiningRewards)]
         local item2 = Config.MiningRewards[math.random(1, #Config.MiningRewards)]
@@ -29,7 +29,7 @@ AddEventHandler('rsg-mining:server:giveMiningReward', function()
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
         Player.Functions.AddItem(item3, Config.MediumRewardAmount)
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
-        TriggerClientEvent('RSGCore:Notify', src, 'medium haul this time!', 'primary')
+        TriggerClientEvent('RSGCore:Notify', src, Lang:t('primary.medium_haul_this_time'), 'primary')
     elseif chance > 80 then -- large reward
         local item1 = Config.MiningRewards[math.random(1, #Config.MiningRewards)]
         local item2 = Config.MiningRewards[math.random(1, #Config.MiningRewards)]
@@ -41,7 +41,7 @@ AddEventHandler('rsg-mining:server:giveMiningReward', function()
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
         Player.Functions.AddItem(item3, Config.LargeRewardAmount)
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
-        TriggerClientEvent('RSGCore:Notify', src, 'large haul this time!', 'primary')
+        TriggerClientEvent('RSGCore:Notify', src, Lang:t('primary.largq_haul_this_time'), 'primary')
     end
 end)
 
@@ -53,9 +53,9 @@ AddEventHandler('rsg-mining:server:removeitem', function(item)
     if item == 'pickaxe' then
         Player.Functions.RemoveItem('pickaxe', 1)
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['pickaxe'], "add")
-        RSGCore.Functions.Notify(src, 'your pickaxe broke!', 'success')
+        RSGCore.Functions.Notify(src, Lang:t('success.your_pickaxe_broke'), 'success')
     else
-        RSGCore.Functions.Notify(src, 'something went wrong!', 'error')
+        RSGCore.Functions.Notify(src, Lang:t('error.something_went_wrong'), 'error')
         print('something went wrong with moonshine script could be exploint!')
     end
 end)

@@ -5,16 +5,19 @@ game 'rdr3'
 author 'RexShack#3041'
 description 'rsg-mining'
 
+shared_scripts {
+    '@rsg-core/shared/locale.lua',
+    'locales/en.lua',
+    'locales/*.lua',
+    'config.lua',
+}
+
 client_script {
     'client/client.lua',
 }
 
 server_scripts {
     'server/server.lua',
-}
-
-shared_scripts {
-    'config.lua'
 }
 
 lua54 'yes'
