@@ -1,6 +1,8 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local miningstarted = false
 local mining
+local testAnimDict = 'amb_work@world_human_pickaxe@wall@male_d@base'
+local testAnim = 'base'
 
 --------------------------------------------------------------------------
 
@@ -46,14 +48,36 @@ AddEventHandler('rsg-mining:client:StartMining', function()
             if randomNumber > 90 then -- 10% chance of pickace breaking
                 TriggerServerEvent('rsg-mining:server:removeitem', 'pickaxe')
             else
+                local coords = GetEntityCoords(player)
+                local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
+                local prop = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
                 miningstarted = true
-                TaskStartScenarioInPlace(player, GetHashKey('WORLD_HUMAN_PICKAXE_WALL'), -1, true, false, false, false)
-                Wait(18000)
-                ClearPedTasksImmediately(player)
+
                 SetCurrentPedWeapon(player, `WEAPON_UNARMED`, true)
-                RemoveAllPedWeapons(player, true, true)
-                TriggerServerEvent('rsg-mining:server:giveMiningReward')
-                miningstarted = false
+                FreezeEntityPosition(player, true)
+                ClearPedTasksImmediately(player)
+                AttachEntityToEntity(prop, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
+
+                TriggerEvent('rsg-mining:client:MiningAnimation')
+
+                RSGCore.Functions.Progressbar("mining", "Mining...", 18000, false, true,
+                {
+                    disableMovement = true,
+                    disableCarMovement = true,
+                    disableMouse = false,
+                    disableCombat = true,
+                }, {}, {}, {}, function()
+                    ClearPedTasksImmediately(player)
+                    FreezeEntityPosition(player, false)
+
+                    TriggerServerEvent('rsg-mining:server:giveMiningReward')
+
+                    SetEntityAsNoLongerNeeded(prop)
+                    DeleteEntity(prop)
+                    DeleteObject(prop)
+
+                    miningstarted = false
+                end)
             end
         else
             RSGCore.Functions.Notify(Lang:t('error.you_dont_have_pickaxe'), 'error')
@@ -61,4 +85,14 @@ AddEventHandler('rsg-mining:client:StartMining', function()
     else
         RSGCore.Functions.Notify(Lang:t('primary.you_are_busy_the_moment'), 'primary')
     end
+end)
+
+AddEventHandler('rsg-mining:client:MiningAnimation', function()
+    local ped = PlayerPedId()
+
+    LoadAnimDict(testAnimDict)
+
+    Wait(100)
+
+    TaskPlayAnim(ped, testAnimDict, testAnim, 3.0, 3.0, -1, 1, 0, false, false, false)
 end)
