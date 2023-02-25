@@ -4,6 +4,16 @@ local mining
 local testAnimDict = 'amb_work@world_human_pickaxe@wall@male_d@base'
 local testAnim = 'base'
 
+local LoadAnimDict = function(dict)
+    local isLoaded = HasAnimDictLoaded(dict)
+
+    while not isLoaded do
+        RequestAnimDict(dict)
+        Wait(5)
+        isLoaded = not isLoaded
+    end
+end
+
 --------------------------------------------------------------------------
 
 -- mining locations
