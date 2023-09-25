@@ -6,6 +6,7 @@ Config.MiningRewards = {
     'aluminum',
     'iron',
     'steel',
+    'coal'
 }
 
 -- set item rewards amount
