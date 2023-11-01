@@ -1,18 +1,31 @@
 Config = {}
 
 -- set the item rewards
-Config.MiningRewards = {
-    'copper',
-    'aluminum',
-    'iron',
-    'steel',
-    'coal'
+Config.RareAward = {
+    'diamond',
+    'ruby',
+    'emerald',
+    'goldore',    
+    'silver_ore'
+}
+
+Config.UncommonAward = {
+    'steel_ore',
+    'rocksalt', 
+    'copper_ore'
+}
+
+Config.Normal = {
+    'rock',
+    'rocksalt',
+    'iron_ore',
+    'coal',
+    'aluminum_ore'
 }
 
 -- set item rewards amount
 Config.SmallRewardAmount = 1
 Config.MediumRewardAmount = 2
-Config.LargeRewardAmount = 3
 
 -- mining locations
 Config.MiningLocations = {

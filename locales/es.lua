@@ -9,6 +9,8 @@ local Translations = {
     primary = {
         you_are_busy_the_moment = 'Estas ocupado!',
         small_haul_time = 'hora de un pequeño botín!',
+        lucky_haul_time = 'Caiste con suerte esta vez! ',
+        destroyed_rock = 'Destruistes la piedra, Ya no hay mas suerte con esta! ',
         medium_haul_this_time = 'hora de un mediano botín!',
         largq_haul_this_time = 'hora de un gran botín!',
     },

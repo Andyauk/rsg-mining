@@ -101,8 +101,6 @@ AddEventHandler('rsg-mining:client:MiningAnimation', function()
     local ped = PlayerPedId()
 
     LoadAnimDict(testAnimDict)
-
     Wait(100)
-
     TaskPlayAnim(ped, testAnimDict, testAnim, 3.0, 3.0, -1, 1, 0, false, false, false)
 end)
