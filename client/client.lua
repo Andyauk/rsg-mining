@@ -55,7 +55,7 @@ AddEventHandler('rsg-mining:client:StartMining', function()
     if miningstarted == false then
         if hasItem then
             local randomNumber = math.random(1,100)
-            if randomNumber > 90 then -- 10% chance of pickace breaking
+            if randomNumber > 95 then -- 5% chance of pickace breaking
                 TriggerServerEvent('rsg-mining:server:removeitem', 'pickaxe')
             else
                 local coords = GetEntityCoords(player)
@@ -80,7 +80,7 @@ AddEventHandler('rsg-mining:client:StartMining', function()
                     ClearPedTasksImmediately(player)
                     FreezeEntityPosition(player, false)
 
-                    TriggerServerEvent('rsg-mining:server:giveMiningReward')
+                    TriggerServerEvent('rsg-mining:server:givestone')
 
                     SetEntityAsNoLongerNeeded(prop)
                     DeleteEntity(prop)

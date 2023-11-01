@@ -31,8 +31,8 @@ end
 
 -----------------------------------------------------------------------
 
-RegisterServerEvent('jp-mining:server:givestone')
-AddEventHandler('jp-mining:server:givestone', function()
+RegisterServerEvent('rsg-mining:server:givestone')
+AddEventHandler('rsg-mining:server:givestone', function()
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     local chance = math.random(1, 100)
@@ -47,24 +47,11 @@ AddEventHandler('jp-mining:server:givestone', function()
         local salt = math.random(1, 3)
         Player.Functions.AddItem('rocksalt', salt)
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['coal'], "add")
-
-        local webhookUrl = ""
-
-        local discordMessage = string.format("**Mining**\nPlayer: %s\nCitizen ID: %s\nMined: %s\nOres: %s", playername, citizenid, salt .. " and, " .. rock, 'rocksalt, rock')
-        local discordPayload = {
-            embeds = {
-                {
-                    title = "Mining",
-                    description = discordMessage,
-                    color = 16711680 -- Red color in decimal format
-                }
-            }
-        }
     end
 end)
 
-RegisterServerEvent('jp-mining:server:washrocks')
-AddEventHandler('jp-mining:server:washrocks', function()
+RegisterServerEvent('rsg-mining:server:washrocks')
+AddEventHandler('rsg-mining:server:washrocks', function()
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     local chance = math.random(1, 100)
