@@ -46,7 +46,7 @@ AddEventHandler('rsg-mining:server:givestone', function()
     if chance <= 50 then
         local salt = math.random(1, 3)
         Player.Functions.AddItem('rocksalt', salt)
-        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['coal'], "add")
+        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['rocksalt'], "add")
     end
 end)
 

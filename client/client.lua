@@ -1,8 +1,8 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local miningstarted = false
 local mining
-local testAnimDict = 'amb_work@world_human_pickaxe@wall@male_d@base'
-local testAnim = 'base'
+local mineAnimation = 'amb_work@world_human_pickaxe@wall@male_d@base'
+local anim = 'base'
 local options = {}
 
 local LoadAnimDict = function(dict)
@@ -18,20 +18,20 @@ end
 --------------------------------------------------------------------------
 
 -- mining locations
-Citizen.CreateThread(function()
-    for mining, v in pairs(Config.MiningLocations) do
-        exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], Lang:t('menu.start') .. v.name, {
-            type = 'client',
-            event = 'rsg-miningg:client:StartMining',
-        })
-        if v.showblip == true then
-            local MiningBlip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, v.coords)
-            SetBlipSprite(MiningBlip, GetHashKey("blip_ambient_tracking"), 1)
-            SetBlipScale(MiningBlip, 0.2)
-            Citizen.InvokeNative(0x9CB1A1623062F402, MiningBlip, v.name)
-        end
-    end
-end)
+-- Citizen.CreateThread(function()
+--     for mining, v in pairs(Config.MiningLocations) do
+--         exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], Lang:t('menu.start') .. v.name, {
+--             type = 'client',
+--             event = 'rsg-mining:client:StartMining',
+--         })
+--         if v.showblip == true then
+--             local MiningBlip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, v.coords)
+--             SetBlipSprite(MiningBlip, GetHashKey("blip_ambient_tracking"), 1)
+--             SetBlipScale(MiningBlip, 0.2)
+--             Citizen.InvokeNative(0x9CB1A1623062F402, MiningBlip, v.name)
+--         end
+--     end
+-- end)
 
 -- draw marker if set to true in config
 CreateThread(function()
@@ -47,31 +47,46 @@ CreateThread(function()
 end)
 
 --------------------------------------------------------------------------
-
 -- start mining
-RegisterNetEvent('rsg-miningg:client:StartMining')
-AddEventHandler('rsg-miningg:client:StartMining', function()
+Citizen.CreateThread(function()
+    for _, mining in pairs(Config.MiningLocations) do
+        exports['rsg-core']:createPrompt(mining.location, mining.coords, RSGCore.Shared.Keybinds['E'], 'Start ' .. mining.name, {
+            type = 'client',
+            event = 'rsg-mining:client:StartMining'
+        })
+        if mining.showblip == true then
+            local MiningBlip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, mining.coords)
+            SetBlipSprite(MiningBlip, 1220803671)
+            SetBlipScale(MiningBlip)
+            Citizen.InvokeNative(0x9CB1A1623062F402, MiningBlip, mining.name)
+        end
+    end
+end)
+
+RegisterNetEvent('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
     local hasItem = RSGCore.Functions.HasItem('pickaxe', 1)
+    local chance = math.random(1, 100)
+    
     if miningstarted == false then
         if hasItem then
-            local randomNumber = math.random(1,100)
-            if randomNumber > 95 then -- 5% chance of pickace breaking
-                TriggerServerEvent('rsg-miningg:server:removeitem', 'pickaxe')
+            local numberGenerator = math.random(1, 100)
+            if numberGenerator <= 5 then
+                TriggerServerEvent('rsg-mining:server:breakpickaxe')
             else
                 local coords = GetEntityCoords(player)
                 local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
-                local prop = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
+                local pickaxe = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
                 miningstarted = true
 
-                SetCurrentPedWeapon(player, `WEAPON_UNARMED`, true)
+                SetCurrentPedWeapon(player, "WEAPON_UNARMED", true)
                 FreezeEntityPosition(player, true)
                 ClearPedTasksImmediately(player)
-                AttachEntityToEntity(prop, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
+                AttachEntityToEntity(pickaxe, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
 
-                TriggerEvent('rsg-miningg:client:MiningAnimation')
+                TriggerEvent('rsg-mining:client:MineAnimation')
 
-                RSGCore.Functions.Progressbar("mining", "Mining...", 18000, false, true,
+                RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
                 {
                     disableMovement = true,
                     disableCarMovement = true,
@@ -81,29 +96,29 @@ AddEventHandler('rsg-miningg:client:StartMining', function()
                     ClearPedTasksImmediately(player)
                     FreezeEntityPosition(player, false)
 
-                    TriggerServerEvent('rsg-miningg:server:givestone')
+                    TriggerServerEvent('rsg-mining:server:givestone')
 
-                    SetEntityAsNoLongerNeeded(prop)
-                    DeleteEntity(prop)
-                    DeleteObject(prop)
+                    SetEntityAsNoLongerNeeded(pickaxe)
+                    DeleteEntity(pickaxe)
+                    DeleteObject(pickaxe)
 
                     miningstarted = false
                 end)
             end
         else
-            RSGCore.Functions.Notify(Lang:t('error.you_dont_have_pickaxe'), 'error')
+            RSGCore.Functions.Notify('You don\'t have a pickaxe!', 'error')
         end
     else
-        RSGCore.Functions.Notify(Lang:t('primary.you_are_busy_the_moment'), 'primary')
+        RSGCore.Functions.Notify('You are already doing something!', 'primary')
     end
 end)
 
-AddEventHandler('rsg-miningg:client:MiningAnimation', function()
-    local ped = PlayerPedId()
+AddEventHandler('rsg-mining:client:MineAnimation', function()
+    local player = PlayerPedId()
 
-    LoadAnimDict(testAnimDict)
+    LoadAnimDict(mineAnimation)
     Wait(100)
-    TaskPlayAnim(ped, testAnimDict, testAnim, 3.0, 3.0, -1, 1, 0, false, false, false)
+    TaskPlayAnim(player, mineAnimation, anim, 3.0, 3.0, -1, 1, 0, false, false, false)
 end)
 
 
