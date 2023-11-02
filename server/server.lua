@@ -172,6 +172,50 @@ AddEventHandler('rsg-mining:server:removeitem', function(item)
     end
 end)
 
+-----------------------------------------------------------------------------------------------------------------
+-- Smelting
+-- check player has the smeltitems
+RSGCore.Functions.CreateCallback('rsg-mining:server:checkingsmeltitems', function(source, cb, smeltitems, smeltamount)
+    local src = source
+    local hasItems = false
+    local icheck = 0
+    local Player = RSGCore.Functions.GetPlayer(src)
+    for k, v in pairs(smeltitems) do
+        if Player.Functions.GetItemByName(v.item) and Player.Functions.GetItemByName(v.item).amount >= v.amount * smeltamount then
+            icheck = icheck + 1
+            if icheck == #smeltitems then
+                cb(true)
+            end
+        else
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.you_dont_have_the_required_items').. RSGCore.Shared.Items[tostring(v.item)].label, 'error')
+            cb(false)
+            return
+        end
+    end
+end)
+
+-- finish smelting
+RegisterServerEvent('rsg-mining:server:finishsmelting')
+AddEventHandler('rsg-mining:server:finishsmelting', function(smeltitems, receive, giveamount, smeltamount)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    -- remove ingredients
+    for k, v in pairs(smeltitems) do
+        if Config.Debug == true then
+            print(v.item)
+            print(v.amount)
+        end
+        local requiredAmount = v.amount * smeltamount
+        Player.Functions.RemoveItem(v.item, requiredAmount)    
+        TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[v.item], "remove")
+    end
+    -- add cooked item
+    Player.Functions.AddItem(receive, giveamount * smeltamount)
+    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[receive], "add")
+    local labelReceive = RSGCore.Shared.Items[receive].label
+    TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.smelting_successful')..' '..smeltamount..' ' .. labelReceive, 'success')
+end)
+
 --------------------------------------------------------------------------------------------------
 -- start version check
 --------------------------------------------------------------------------------------------------

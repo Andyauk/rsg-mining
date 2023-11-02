@@ -7,6 +7,7 @@ description 'rsg-mining'
 version '1.0.0'
 
 shared_scripts {
+    '@ox_lib/init.lua',
     '@rsg-core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
@@ -14,7 +15,7 @@ shared_scripts {
 }
 
 client_script {
-    'client/client.lua',
+    'client/*.lua',
 }
 
 server_scripts {
