@@ -62,7 +62,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
 
     if chance <= 5 then
         
-        if checkItem.amount >= 3 then
+        if checkItem.amount > 3 and chance <= 13 then
             local ore = math.random(1, 3)
             local remaining = 0
             Player.Functions.RemoveItem('rock', 3)
@@ -84,7 +84,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "add")
         end
 
-    elseif chance > 5 and chance <= 30 then
+    elseif chance > 15 and chance <= 45 then
 
         if checkItem.amount >= 3 then
             local ore = math.random(1, 3)
@@ -109,7 +109,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item2], "add")
         end
 
-    elseif chance > 30 and chance <= 50 then
+    elseif chance > 47 and chance <= 68 then
 
         if checkItem.amount >= 3 then
             local ore = math.random(1, 3)
