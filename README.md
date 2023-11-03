@@ -37,6 +37,7 @@ end
 - Search for PromptHasHoldModeCompleted(DrinkPrompt) in rsg-essentials/client/nearwater.lua and add this under it:
 
 -- wash rock
+
 if PromptHasStandardModeCompleted(RockPrompt) then -- Change this to - PromptHasHoldModeComplete(RockPrompt, true) -- if you would like hold button instead of tap and you set the first added code to Hold also.
     if not isWashing then
         TriggerEvent('rsg-river:client:checkrocks')   
@@ -46,11 +47,13 @@ end
 - Example:
 
 -- Old Code
+
 if PromptHasHoldModeCompleted(DrinkPrompt) then
     TriggerEvent('rsg-river:client:drink')    
 end
 
 -- Added Code
+
 if PromptHasStandardModeCompleted(RockPrompt) then
     if not isWashing then
         TriggerEvent('rsg-river:client:checkrocks')   
