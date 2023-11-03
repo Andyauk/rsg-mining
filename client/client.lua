@@ -17,22 +17,6 @@ end
 
 --------------------------------------------------------------------------
 
--- mining locations
--- Citizen.CreateThread(function()
---     for mining, v in pairs(Config.MiningLocations) do
---         exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds['J'], Lang:t('menu.start') .. v.name, {
---             type = 'client',
---             event = 'rsg-mining:client:StartMining',
---         })
---         if v.showblip == true then
---             local MiningBlip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, v.coords)
---             SetBlipSprite(MiningBlip, GetHashKey("blip_ambient_tracking"), 1)
---             SetBlipScale(MiningBlip, 0.2)
---             Citizen.InvokeNative(0x9CB1A1623062F402, MiningBlip, v.name)
---         end
---     end
--- end)
-
 -- draw marker if set to true in config
 CreateThread(function()
     while true do
