@@ -23,6 +23,17 @@ function RockPrompt()
     end)
 end
 
+-- Add This Anywhere in rsg-essentials/client/nearwater.lua:
+
+AddEventHandler('rsg-river:client:checkrocks', function()
+    local hasItem = RSGCore.Functions.HasItem('rock', 1)
+    if hasItem then
+        TriggerEvent('rsg-river:client:washrocks')
+    else
+        RSGCore.Functions.Notify('You have no more stone to wash!', 'error')
+    end
+end)
+
 -- Search for PromptHasHoldModeCompleted(DrinkPrompt) in rsg-essentials/client/nearwater.lua and add this under it:
 
 -- wash rock

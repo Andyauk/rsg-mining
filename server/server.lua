@@ -158,8 +158,8 @@ AddEventHandler('rsg-mining:server:washrocks', function()
 end)
 
 -- remove pickaxe if broken
-RegisterServerEvent('rsg-mining:server:removeitem')
-AddEventHandler('rsg-mining:server:removeitem', function(item)
+RegisterServerEvent('rsg-mining:server:breakpickaxe')
+AddEventHandler('rsg-mining:server:breakpickaxe', function(item)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     if item == 'pickaxe' then
