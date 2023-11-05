@@ -159,45 +159,50 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
     local animName = 'idle_a'
 
     RSGCore.Functions.RequestAnimDict(animDict)
-
-    -- Check if the animation dictionary was successfully loaded
-    if HasAnimDictLoaded(animDict) then
-        -- Play the animation
-        TaskPlayAnim(ped, animDict, animName, 8.0, -8.0, -1, 1, 0, false, false, false)
-        LocalPlayer.state:set("inv_busy", true, true)
-
-        -- Use the Oxlib progress circle with a message
-        if lib.progressCircle({
-            duration = smelttime, -- Adjust the duration as needed
-            position = 'bottom',
-            useWhileDead = false,
-            canCancel = false, -- Change to true if you want to allow canceling
-            anim = {
-                dict = animDict,
-                clip = 'empathise_headshake_f_001',
-                flag = 15,
-            },
-            disableControl = true, -- Disable player control during the animation
-            label = 'Smelting ' .. title, -- Your cooking message here
-        }) then
-            -- Cooking was successful
-            TriggerServerEvent('rsg-mining:server:finishsmelting', smeltitems, receive, giveamount, smeltamount)
-
-
-            -- Stop the animation
-            StopAnimTask(ped, animDict, animName, 1.0)
-            LocalPlayer.state:set("inv_busy", false, true)
-        else
-            -- Handle cancelation or failure
-            RSGCore.Functions.Notify("Smelting canceled or failed.", 'error')
-
-            -- Cancel the animation
-            StopAnimTask(ped, animDict, animName, 1.0)
-            LocalPlayer.state:set("inv_busy", false, true)
-        end
+    local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+    if success == true then
+	    -- Check if the animation dictionary was successfully loaded
+	    if HasAnimDictLoaded(animDict) then
+		-- Play the animation
+		TaskPlayAnim(ped, animDict, animName, 8.0, -8.0, -1, 1, 0, false, false, false)
+		LocalPlayer.state:set("inv_busy", true, true)
+	
+		-- Use the Oxlib progress circle with a message
+		if lib.progressCircle({
+		    duration = smelttime, -- Adjust the duration as needed
+		    position = 'bottom',
+		    useWhileDead = false,
+		    canCancel = false, -- Change to true if you want to allow canceling
+		    anim = {
+			dict = animDict,
+			clip = 'empathise_headshake_f_001',
+			flag = 15,
+		    },
+		    disableControl = true, -- Disable player control during the animation
+		    label = 'Smelting ' .. title, -- Your cooking message here
+		}) then
+		    -- Cooking was successful
+		    TriggerServerEvent('rsg-mining:server:finishsmelting', smeltitems, receive, giveamount, smeltamount)
+	
+	
+		    -- Stop the animation
+		    StopAnimTask(ped, animDict, animName, 1.0)
+		    LocalPlayer.state:set("inv_busy", false, true)
+		else
+		    -- Handle cancelation or failure
+		    RSGCore.Functions.Notify("Smelting canceled or failed.", 'error')
+	
+		    -- Cancel the animation
+		    StopAnimTask(ped, animDict, animName, 1.0)
+		    LocalPlayer.state:set("inv_busy", false, true)
+		end
+	    else
+		-- Handle if the animation dictionary couldn't be loaded
+		lib.notify({ title = 'Error', description = "Failed to load animation dictionary.", type = 'error' })
+	    end
     else
-        -- Handle if the animation dictionary couldn't be loaded
-        lib.notify({ title = 'Error', description = "Failed to load animation dictionary.", type = 'error' })
+	SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
+        lib.notify({ title = 'Try again!', description = 'Have you never craft?', type = 'error' })
     end
 end)
 
