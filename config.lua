@@ -5,7 +5,7 @@ Config.img = "rsg-inventory/html/images/"
 ---------------------------
 -- CONFIG goldpaning 
 ---------------------------
-Config.propGoldpan = "P_CS_MININGPAN01X"
+
 Config.itemGoldpan = "goldpan"
 Config.itemRock = "rock"
 
@@ -72,7 +72,6 @@ Config.RewardPaning = {
 -- CONFIG smelt
 ---------------------------
 
-Config.propSmelt = 'p_goldsmeltburner01x' --'p_baseburner01x', 
 Config.itemSmelt = "goldsmelt"
 Config.UseGoldSmeltItem = true
 
@@ -152,7 +151,6 @@ Config.KeyMining = 'E'
 
 Config.Cooldown = 20 -- seconds
 Config.itemMining = 'pickaxe'
-Config.propMining = "p_pickaxe01x"
 
 -- set item rewards amount
 Config.SmallRewardAmount = 1
