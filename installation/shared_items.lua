@@ -1,6 +1,9 @@
 	-- bpos
 	["pickaxe"]		= {["name"] = "pickaxe",	["label"] = "Pickaxe",	["weight"] = 100,	["type"] = "item",	["image"] = "pickaxe.png",	['unique'] = false,	['useable'] = true,	['shouldClose'] = true,	['combinable'] = nil,	['level'] = 0,	["description"] = "equipment for mining"},
-	['copper']   = {['name'] = 'copper',   ['label'] = 'Copper',   ['weight'] = 100, ['type'] = 'item', ['image'] = 'copper.png',   ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
+	['goldpan']			= {['name'] = 'goldpan',		['label'] = 'goldpan',			    ['weight'] = 100,	['type'] = 'item',	['image'] = 'goldpan.png',		['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	['combinable'] = nil,   ['level'] = 0, ['description'] = 'equipment for mining'},
+	['goldsmelt']       = {['name'] = 'goldsmelt',      ['label'] = 'goldsmelt',            ['weight'] = 300,   ['type'] = 'item',  ['image'] = 'goldsmelt.png',    ['unique'] = false,     ['useable'] = true,['shouldClose'] = true, ['combinable'] = nil,   ['level'] = 0, ['description'] = 'equipment for gold smelting'},
+    
+    ['copper']   = {['name'] = 'copper',   ['label'] = 'Copper',   ['weight'] = 100, ['type'] = 'item', ['image'] = 'copper.png',   ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
     ['aluminum'] = {['name'] = 'aluminum', ['label'] = 'Aluminum', ['weight'] = 100, ['type'] = 'item', ['image'] = 'aluminum.png', ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
     ['iron']     = {['name'] = 'iron',     ['label'] = 'Iron',     ['weight'] = 100, ['type'] = 'item', ['image'] = 'iron.png',     ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
     ['steel']    = {['name'] = 'steel',    ['label'] = 'Steel',    ['weight'] = 100, ['type'] = 'item', ['image'] = 'steel.png',    ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
@@ -20,4 +23,5 @@
     ['silver_ore']       = {['name'] = 'silver_ore',       ['label'] = 'Silver Ore',  ['weight'] = 1000,   ['type'] = 'item', ['image'] = 'silver_ore.png', ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'A precious stone of transparent green beryl.'},
     ['wood_planks']     = {['name'] = 'wood_planks',     ['label'] = 'Wood Planks',     ['weight'] = 100, ['type'] = 'item', ['image'] = 'wood_planks.png',     ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
     
-	
+	['sand']			= {['name'] = 'sand',			['label'] = 'sand',				['weight'] = 100,	['type'] = 'item',	['image'] = 'mining_sand.png',			['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	['combinable'] = nil,	['level'] = 0,	['description'] = 'crafting material'},
+    ['salt']			= {['name'] = 'salt',			['label'] = 'Sal',				        ['weight'] = 100,	['type'] = 'item',	['image'] = 'salt.png',				['unique'] = false, 	['useable'] = true, 	['shouldClose'] = true,	['combinable'] = nil,	['level'] = 0,	['description'] = 'Corn Starch'}, 		    

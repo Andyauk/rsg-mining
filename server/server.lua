@@ -31,6 +31,31 @@ end
 
 -----------------------------------------------------------------------
 
+---------------------------
+-- use item
+---------------------------
+-- use goldsmelt
+RSGCore.Functions.CreateUseableItem("goldsmelt", function(source, item)
+    local src = source
+	TriggerClientEvent('rsg-mining:client:setupgoldsmelt', src, item.name)
+end)
+
+-- use goldpan
+RSGCore.Functions.CreateUseableItem("goldpan", function(source, item)
+    local src = source
+    TriggerClientEvent("rsg-mining:client:StartGoldPan", src, item.name)
+end)
+
+--[[]] 
+RSGCore.Functions.CreateUseableItem("rock", function(source, item)
+    local src = source
+	TriggerClientEvent('rsg-mining:client:StartRockPan', src, item.name)
+end) 
+
+---------------------------
+-- mining
+---------------------------
+
 RegisterServerEvent('rsg-mining:server:givestone')
 AddEventHandler('rsg-mining:server:givestone', function()
     local src = source
@@ -49,6 +74,78 @@ AddEventHandler('rsg-mining:server:givestone', function()
         TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['rocksalt'], "add")
     end
 end)
+
+---------------------------
+-- remove pickaxe if broken
+---------------------------
+
+RegisterServerEvent('rsg-mining:server:breakpickaxe')
+AddEventHandler('rsg-mining:server:breakpickaxe', function(item)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    if item == 'pickaxe' then
+        Player.Functions.RemoveItem('pickaxe', 1)
+        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['pickaxe'], "add")
+        
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.your_pickaxe_broke'), type = 'success' })
+            
+    else
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.something_went_wrong'), type = 'error' })
+            print('something went wrong with the script could be exploint!')
+    end
+end)
+
+---------------------------
+-- Smelting
+---------------------------
+
+-- check player has the smeltitems
+RSGCore.Functions.CreateCallback('rsg-mining:server:checkingsmeltitems', function(source, cb, smeltitems, smeltamount)
+    local src = source
+    local hasItems = false
+    local icheck = 0
+    local Player = RSGCore.Functions.GetPlayer(src)
+    for k, v in pairs(smeltitems) do
+        if Player.Functions.GetItemByName(v.item) and Player.Functions.GetItemByName(v.item).amount >= v.amount * smeltamount then
+            icheck = icheck + 1
+            if icheck == #smeltitems then
+                cb(true)
+            end
+        else
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.you_dont_have_the_required_items').. RSGCore.Shared.Items[tostring(v.item)].label, type = 'error' })
+            cb(false)
+            return
+        end
+    end
+end)
+
+-- finish smelting
+RegisterServerEvent('rsg-mining:server:finishsmelting')
+AddEventHandler('rsg-mining:server:finishsmelting', function(smeltitems, receive, giveamount, smeltamount)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    -- remove ingredients
+    for k, v in pairs(smeltitems) do
+        if Config.Debug == true then
+            print(v.item)
+            print(v.amount)
+        end
+        local requiredAmount = v.amount * smeltamount
+        Player.Functions.RemoveItem(v.item, requiredAmount)    
+        TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[v.item], "remove")
+    end
+    -- add cooked item
+    Player.Functions.AddItem(receive, giveamount * smeltamount)
+    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[receive], "add")
+    local labelReceive = RSGCore.Shared.Items[receive].label
+
+    TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.smelting_successful')..' '..smeltamount..' ' .. labelReceive, type = 'success' })
+
+end)
+
+---------------------------
+-- paning washrocks
+---------------------------
 
 RegisterServerEvent('rsg-mining:server:washrocks')
 AddEventHandler('rsg-mining:server:washrocks', function()
@@ -153,67 +250,131 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             Player.Functions.RemoveItem('rock', 1)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
         end
-        TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.destroyed_rock'), 'error')
+        
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.destroyed_rock'), type = 'error' })
+
     end
 end)
 
--- remove pickaxe if broken
-RegisterServerEvent('rsg-mining:server:breakpickaxe')
-AddEventHandler('rsg-mining:server:breakpickaxe', function(item)
+---------------------------
+-- goldpaning
+---------------------------
+
+-- give reward
+RegisterServerEvent('rsg-mining:server:rewardgoldpaning')
+AddEventHandler('rsg-mining:server:rewardgoldpaning', function()
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-    if item == 'pickaxe' then
-        Player.Functions.RemoveItem('pickaxe', 1)
-        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['pickaxe'], "add")
-        RSGCore.Functions.Notify(src, Lang:t('success.your_pickaxe_broke'), 'success')
+    local foundgold = math.random(1,100)
+    local firstname = Player.PlayerData.charinfo.firstname
+    local lastname = Player.PlayerData.charinfo.lastname
+
+    if foundgold < Config.GoldChance then
+        local chance = math.random(1,100)
+        if chance <= 50 then
+            local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            -- add items
+            Player.Functions.AddItem(item1, Config.SmallRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description =  'not much this pan', type = 'primary' })
+
+            -- webhook
+            TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Found 🌟', 'yellow', firstname..' '..lastname..' found a gold nugget!')
+        
+        elseif chance >= 50 and chance <= 80 then -- medium reward
+            local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            -- add items
+            Player.Functions.AddItem(item1, Config.MediumRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+            Player.Functions.AddItem(item2, Config.MediumRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
+
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
+            -- webhook
+            TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Fever 🌟', 'yellow', firstname..' '..lastname..' found two gold nuggets!')
+        
+        elseif chance > 80 then -- large reward
+            local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            local item3 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+            -- add items
+            Player.Functions.AddItem(item1, Config.LargeRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+            Player.Functions.AddItem(item2, Config.LargeRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
+            Player.Functions.AddItem(item3, Config.LargeRewardAmount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
+
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Jackpot', description = 'gold fever rewards..', type = 'primary' })
+
+            -- webhook
+            TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Jackpot Gold Find 🌟', 'yellow', firstname..' '..lastname..' found three gold nuggets!')
+        end
     else
-        RSGCore.Functions.Notify(src, Lang:t('error.something_went_wrong'), 'error')
-        print('something went wrong with the script could be exploint!')
+
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Best lucky', description = 'no gold this time..', type = 'primary' })
+
     end
 end)
 
------------------------------------------------------------------------------------------------------------------
--- Smelting
--- check player has the smeltitems
-RSGCore.Functions.CreateCallback('rsg-mining:server:checkingsmeltitems', function(source, cb, smeltitems, smeltamount)
+-- give hotspot reward
+RegisterServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
     local src = source
-    local hasItems = false
-    local icheck = 0
     local Player = RSGCore.Functions.GetPlayer(src)
-    for k, v in pairs(smeltitems) do
-        if Player.Functions.GetItemByName(v.item) and Player.Functions.GetItemByName(v.item).amount >= v.amount * smeltamount then
-            icheck = icheck + 1
-            if icheck == #smeltitems then
-                cb(true)
+    local foundgold = math.random(1,100)
+    local firstname = Player.PlayerData.charinfo.firstname
+    local lastname = Player.PlayerData.charinfo.lastname
+
+        if foundgold < Config.HSGoldChance then
+            local chance = math.random(1,100)
+            if chance <= 50 then
+                local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                -- add items
+                Player.Functions.AddItem(item1, Config.HSSmallRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description =  'not much this pan', type = 'primary' })
+
+                -- webhook
+                TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Gold Found 🌟', 'yellow', firstname..' '..lastname..' found a gold nugget!')
+            end
+            if chance >= 50 and chance <= 80 then -- medium reward
+                local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                -- add items
+                Player.Functions.AddItem(item1, Config.HSMediumRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+                Player.Functions.AddItem(item2, Config.HSMediumRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
+                
+
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
+
+                -- webhook
+                TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Gold Fever 🌟', 'yellow', firstname..' '..lastname..' found two gold nuggets!')
+            end
+            if chance > 80 then -- large reward
+                local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                local item3 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+                -- add items
+                Player.Functions.AddItem(item1, Config.HSLargeRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
+                Player.Functions.AddItem(item2, Config.HSLargeRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
+                Player.Functions.AddItem(item3, Config.HSLargeRewardAmount)
+                TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
+                
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Jackpot', description = 'gold fever rewards..', type = 'primary' })
+                -- webhook
+                TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Jackpot Gold Find 🌟', 'yellow', firstname..' '..lastname..' found three gold nuggets!')
             end
         else
-            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.you_dont_have_the_required_items').. RSGCore.Shared.Items[tostring(v.item)].label, 'error')
-            cb(false)
-            return
-        end
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Best lucky', description = 'no gold this time..', type = 'primary' })
     end
-end)
-
--- finish smelting
-RegisterServerEvent('rsg-mining:server:finishsmelting')
-AddEventHandler('rsg-mining:server:finishsmelting', function(smeltitems, receive, giveamount, smeltamount)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    -- remove ingredients
-    for k, v in pairs(smeltitems) do
-        if Config.Debug == true then
-            print(v.item)
-            print(v.amount)
-        end
-        local requiredAmount = v.amount * smeltamount
-        Player.Functions.RemoveItem(v.item, requiredAmount)    
-        TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[v.item], "remove")
-    end
-    -- add cooked item
-    Player.Functions.AddItem(receive, giveamount * smeltamount)
-    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[receive], "add")
-    local labelReceive = RSGCore.Shared.Items[receive].label
-    TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.smelting_successful')..' '..smeltamount..' ' .. labelReceive, 'success')
 end)
 
 --------------------------------------------------------------------------------------------------

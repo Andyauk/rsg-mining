@@ -15,9 +15,11 @@ local LoadAnimDict = function(dict)
     end
 end
 
---------------------------------------------------------------------------
 
+---------------------------
 -- draw marker if set to true in config
+---------------------------
+
 CreateThread(function()
     while true do
         local sleep = 0
@@ -30,8 +32,10 @@ CreateThread(function()
     end
 end)
 
---------------------------------------------------------------------------
+---------------------------
 -- start mining
+---------------------------
+
 Citizen.CreateThread(function()
     for _, mining in pairs(Config.MiningLocations) do
         exports['rsg-core']:createPrompt(mining.location, mining.coords, RSGCore.Shared.Keybinds['E'], 'Start ' .. mining.name, {
@@ -105,8 +109,9 @@ AddEventHandler('rsg-mining:client:MineAnimation', function()
     TaskPlayAnim(player, mineAnimation, anim, 3.0, 3.0, -1, 1, 0, false, false, false)
 end)
 
-
-------------------------------------------------------------------------------------------------------
+---------------------------
+-- target smelt menu + blip smeltlocations
+---------------------------
 
 for _, k in ipairs(Config.SmeltingLocations) do
     exports['rsg-target']:AddBoxZone("Testing", k.coords, 1.45, 1.35, {
@@ -127,6 +132,16 @@ for _, k in ipairs(Config.SmeltingLocations) do
         distance = 2.5
     })
 
+    exports['rsg-target']:AddTargetModel(Config.Prop, {
+    options = {
+        {   icon = 'far fa-gear',
+            label = "Smelt item", -- use text '' = 'Title example'
+            type = "client",
+            event = 'rsg-mining:client:smeltmenu',
+        },},
+    distance = 2.0,
+    })
+
     if k.showblip == true then
         local SmeltingBlip = Citizen.InvokeNative(0x554D9D53F696D002, 1664425300, k.coords)
         SetBlipSprite(SmeltingBlip, GetHashKey("blip_shop_shady_store"), 1)
@@ -135,7 +150,9 @@ for _, k in ipairs(Config.SmeltingLocations) do
     end
 end
 
-------------------------------------------------------------------------------------------------------
+---------------------------
+-- menu smeltmenu
+---------------------------
 
 local categoryMenus = {}
 
@@ -209,8 +226,9 @@ AddEventHandler('rsg-mining:client:smeltmenu', function()
     lib.showContext(mainMenu.id)
 end)
 
-------------------------------------------------------------------------------------------------------
+---------------------------
 -- check player has the ingredients to cook item
+---------------------------
 RegisterNetEvent('rsg-mining:client:checksmeltitems', function(data)
     local input = lib.inputDialog('Smelting Amount', {
         { 
@@ -230,7 +248,7 @@ RegisterNetEvent('rsg-mining:client:checksmeltitems', function(data)
                 if Config.Debug == true then
                     print("passed")
                 end
-                TriggerEvent('rsg-mining:smeltitem', data.title, data.smeltitems, tonumber(data.smelttime * smeltamount), data.receive, data.giveamount,  smeltamount)
+                TriggerEvent('rsg-mining:client:smeltitem', data.title, data.smeltitems, tonumber(data.smelttime * smeltamount), data.receive, data.giveamount,  smeltamount)
             else
                 if Config.Debug == true then
                     print("failed")
@@ -241,9 +259,8 @@ RegisterNetEvent('rsg-mining:client:checksmeltitems', function(data)
     end
 end)
 
-
 -- do cooking
-RegisterNetEvent('rsg-mining:smeltitem', function(title, smeltitems, smelttime, receive, giveamount, smeltamount)
+RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smelttime, receive, giveamount, smeltamount)
     local ped = PlayerPedId()
     local animDict = 'script_common@shared_scenarios@kneel@mourn@female@a@base'
     local animName = 'base'
@@ -287,5 +304,202 @@ RegisterNetEvent('rsg-mining:smeltitem', function(title, smeltitems, smelttime, 
     end
 end)
 
+---------------------------
+-- gold smelt prop
+---------------------------
 
-------------------------------------------------------------------------------------------------------
+local goldsmelt = false
+
+local function CrouchAnim()
+    local dict = "script_rc@cldn@ig@rsc2_ig1_questionshopkeeper"
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Wait(10)
+    end
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+    TaskPlayAnim(ped, dict, "inspectfloor_player", 0.5, 8.0, -1, 1, 0, false, false, false)
+end
+
+RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
+AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
+	local ped = PlayerPedId()
+    if goldsmelt == true then
+		CrouchAnim()
+		Wait(6000)
+		ClearPedTasks(ped)
+        SetEntityAsMissionEntity(smelt)
+        DeleteObject(smelt)
+        
+        lib.notify({ title = 'Save item', description = 'your iten is pickup', type = 'inform' })
+		
+        goldsmelt = false
+    elseif goldsmelt == false then
+		CrouchAnim()
+		Wait(6000)
+		ClearPedTasks(ped)
+		local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, -1.55))
+		local prop = CreateObject(GetHashKey(Config.Prop), x, y, z, true, false, true)
+		SetEntityHeading(prop, GetEntityHeading(PlayerPedId()))
+		PlaceObjectOnGroundProperly(prop)
+		smelt = prop
+
+        lib.notify({ title = 'Deployed item', description = 'your gold smelt deployed', type = 'inform' })
+		
+        goldsmelt = true
+	end
+end, false)
+
+---------------------------
+-- goldpaning + rockpaning
+---------------------------
+
+local panning = false
+local canPan = false
+-------------------
+local Zones = {}
+local hotspot = false
+-------------------
+-- create hotspot zones
+CreateThread(function() 
+    for k=1, #Config.HotspotZones do
+        Zones[k] = PolyZone:Create(Config.HotspotZones[k].zones, {
+            minZ = Config.HotspotZones[k].minz,
+            maxZ = Config.HotspotZones[k].maxz,
+            debugPoly = false,
+        })
+        Zones[k]:onPlayerInOut(function(isPointInside)
+            if isPointInside then
+                hotspot = true
+            else
+                hotspot = false
+            end
+        end)
+    end
+end)
+
+-- ensure prop is loaded
+local function LoadModel(model)
+    local attempts = 0
+    while attempts < 100 and not HasModelLoaded(model) do
+        RequestModel(model)
+        Citizen.Wait(10)
+        attempts = attempts + 1
+    end
+    return IsModelValid(model)
+end
+
+local function AttachPan()
+    if not DoesEntityExist(prop_goldpan) then
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+    local modelHash = GetHashKey("P_CS_MININGPAN01X")  
+    LoadModel(modelHash)    
+    prop_goldpan = CreateObject(modelHash, coords.x+0.30, coords.y+0.10,coords.z, true, false, false)
+    SetEntityVisible(prop_goldpan, true)
+    SetEntityAlpha(prop_goldpan, 255, false)
+    Citizen.InvokeNative(0x283978A15512B2FE, prop_goldpan, true)   
+    local boneIndex = GetEntityBoneIndexByName(ped, "SKEL_R_HAND")
+    AttachEntityToEntity(prop_goldpan, PlayerPedId(), boneIndex, 0.2, 0.0, -0.20, -100.0, -50.0, 0.0, false, false, false, true, 2, true)
+    SetModelAsNoLongerNeeded(modelHash)
+    end
+end
+
+local function GoldShake()
+    local dict = "script_re@gold_panner@gold_success"
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Wait(10)
+    end
+    TaskPlayAnim(PlayerPedId(), dict, "SEARCH02", 1.0, 8.0, -1, 1, 0, false, false, false)
+end
+
+-- delete goldpan prop
+local function DeletePan(entity)
+    DeleteObject(entity)
+    DeleteEntity(entity)
+    Wait(100)          
+    ClearPedTasks(PlayerPedId())
+end
+
+--[[]] RegisterNetEvent('rsg-mining:client:StartRockPan')
+AddEventHandler('rsg-mining:client:StartRockPan', function()
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+    local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
+    local mounted = IsPedOnMount(ped)
+    if mounted == false then
+        if panning == false then
+            for k,v in pairs(Config.WaterTypes) do 
+                if water == Config.WaterTypes[k]["waterhash"] then
+                    canPan = true
+                    break
+                end
+            end
+            if canPan == true then
+                panning = true
+                AttachPan()
+                CrouchAnim()
+                Wait(6000)
+                ClearPedTasks(ped)
+                GoldShake()
+                local randomwait = math.random(12000,28000)
+                Wait(randomwait)
+                DeletePan(prop_goldpan)
+                --if hotspot == true then
+                    TriggerServerEvent('rsg-mining:server:washrocks')
+                --end
+                panning = false
+                canPan = false
+            else
+                lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
+            end
+        else
+            lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
+        end
+    else
+        lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
+    end
+end) 
+
+RegisterNetEvent('rsg-mining:client:StartGoldPan')
+AddEventHandler('rsg-mining:client:StartGoldPan', function()
+    local ped = PlayerPedId()
+    local coords = GetEntityCoords(ped)
+    local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
+    local mounted = IsPedOnMount(ped)
+    if mounted == false then
+        if panning == false then
+            for k,v in pairs(Config.WaterTypes) do 
+                if water == Config.WaterTypes[k]["waterhash"] then
+                    canPan = true
+                    break
+                end
+            end
+            if canPan == true then
+                panning = true
+                AttachPan()
+                CrouchAnim()
+                Wait(6000)
+                ClearPedTasks(ped)
+                GoldShake()
+                local randomwait = math.random(12000,28000)
+                Wait(randomwait)
+                DeletePan(prop_goldpan)
+                if hotspot == true then
+                    TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+                else
+                    TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
+                end
+                panning = false
+                canPan = false
+            else
+                lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
+            end
+        else
+            lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
+        end
+    else
+        lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
+    end
+end)
