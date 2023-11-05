@@ -18,19 +18,16 @@
 
 # Mining System
 
-*** Locations for mining ***
-*** Smelting locations and objects ***
-*** River washing of ores ***
-*** And river panning ***
+- Locations for mining 
+- Smelting locations and objects 
+- River washing of ores 
+- And river panning 
 
 # Official version thanks
-https://github.com/Rexshack-RedM/rsg-mining 
-
-https://github.com/Rexshack-RedM/rsg-goldsmelt
-
-https://github.com/Rexshack-RedM/rsg-goldpaning
-
-https://github.com/TeToKaZ/rsg-mining
+- https://github.com/Rexshack-RedM/rsg-mining 
+- https://github.com/Rexshack-RedM/rsg-goldsmelt
+- https://github.com/Rexshack-RedM/rsg-goldpaning
+- https://github.com/TeToKaZ/rsg-mining
 
 # Credits
 RexShack / RexShack#3041 (for the original)
