@@ -17,7 +17,6 @@
 - add the following to your server.cfg file : ensure rsg-mining
 
 # Mining System
-
 - Locations for mining 
 - Smelting locations and objects 
 - River washing of ores 
@@ -30,6 +29,6 @@
 - https://github.com/TeToKaZ/rsg-mining
 
 # Credits
-RexShack / RexShack#3041 (for the original)
-killswitch3k / TeToKaZ
-Sadicius / Sadicius#1150 / https://linktr.ee/sadicius
+- RexShack / RexShack#3041 (for the original)
+- killswitch3k / TeToKaZ
+- Sadicius / Sadicius#1150 / https://linktr.ee/sadicius
