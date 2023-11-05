@@ -17,7 +17,7 @@ function RockPrompt()
         PromptSetText(RockPrompt, str)
         PromptSetEnabled(RockPrompt, true)
         PromptSetVisible(RockPrompt, true)
-        PromptSetStandardMode(RockPrompt, true) - Change this to - PromptSetHoldMode(RockPrompt, true) -- if you would like hold button instead of tap.
+        PromptSetStandardMode(RockPrompt, true) -- Change this to - PromptSetHoldMode(RockPrompt, true) -- if you would like hold button instead of tap.
         PromptSetGroup(RockPrompt, RiverGroup)
         PromptRegisterEnd(RockPrompt)
     end)
