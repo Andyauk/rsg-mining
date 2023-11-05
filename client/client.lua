@@ -51,53 +51,72 @@ Citizen.CreateThread(function()
     end
 end)
 
+-- cooldown timer
+function cooldownTimer()
+    cooldownSecondsRemaining = Config.Cooldown
+    Citizen.CreateThread(function()
+        while cooldownSecondsRemaining > 0 do
+            Wait(1000)
+            cooldownSecondsRemaining = cooldownSecondsRemaining - 1
+            --print(cooldownSecondsRemaining)
+        end
+    end)
+end
+
 RegisterNetEvent('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
     local hasItem = RSGCore.Functions.HasItem('pickaxe', 1)
     local chance = math.random(1, 100)
-    
-    if miningstarted == false then
-        if hasItem then
-            local numberGenerator = math.random(1, 100)
-            if numberGenerator <= 5 then
-                TriggerServerEvent('rsg-mining:server:breakpickaxe')
-            else
-                local coords = GetEntityCoords(player)
-                local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
-                local pickaxe = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
-                miningstarted = true
+    if isBusy == false and cooldownSecondsRemaining == 0 then
+        if miningstarted == false then
+            if hasItem then
+                isBusy = true
+                local numberGenerator = math.random(1, 100)
+                if numberGenerator <= 5 then
+                    TriggerServerEvent('rsg-mining:server:breakpickaxe')
+                else
+                    local coords = GetEntityCoords(player)
+                    local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
+                    local pickaxe = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
+                    miningstarted = true
 
-                SetCurrentPedWeapon(player, "WEAPON_UNARMED", true)
-                FreezeEntityPosition(player, true)
-                ClearPedTasksImmediately(player)
-                AttachEntityToEntity(pickaxe, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
-
-                TriggerEvent('rsg-mining:client:MineAnimation')
-
-                RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
-                {
-                    disableMovement = true,
-                    disableCarMovement = true,
-                    disableMouse = false,
-                    disableCombat = true,
-                }, {}, {}, {}, function()
+                    SetCurrentPedWeapon(player, "WEAPON_UNARMED", true)
+                    FreezeEntityPosition(player, true)
                     ClearPedTasksImmediately(player)
-                    FreezeEntityPosition(player, false)
+                    AttachEntityToEntity(pickaxe, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
 
-                    TriggerServerEvent('rsg-mining:server:givestone')
+                    TriggerEvent('rsg-mining:client:MineAnimation')
+                    LocalPlayer.state:set("inv_busy", true, true)
 
-                    SetEntityAsNoLongerNeeded(pickaxe)
-                    DeleteEntity(pickaxe)
-                    DeleteObject(pickaxe)
+                    RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
+                    {
+                        disableMovement = true,
+                        disableCarMovement = true,
+                        disableMouse = false,
+                        disableCombat = true,
+                    }, {}, {}, {}, function()
+                        ClearPedTasksImmediately(player)
+                        FreezeEntityPosition(player, false)
 
-                    miningstarted = false
-                end)
+                        TriggerServerEvent('rsg-mining:server:givestone')
+                        LocalPlayer.state:set("inv_busy", false, true)
+                        SetEntityAsNoLongerNeeded(pickaxe)
+                        DeleteEntity(pickaxe)
+                        DeleteObject(pickaxe)
+
+                        miningstarted = false
+                    end)
+                end
+                cooldownTimer()
+                isBusy = false
+            else
+                RSGCore.Functions.Notify('You don\'t have a pickaxe!', 'error')
             end
         else
-            RSGCore.Functions.Notify('You don\'t have a pickaxe!', 'error')
+            RSGCore.Functions.Notify('You are already doing something!', 'primary')
         end
     else
-        RSGCore.Functions.Notify('You are already doing something!', 'primary')
+        RSGCore.Functions.Notify('Rest your muscles!', 'primary')
     end
 end)
 
@@ -271,6 +290,7 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
     if HasAnimDictLoaded(animDict) then
         -- Play the animation
         TaskPlayAnim(ped, animDict, animName, 8.0, -8.0, -1, 1, 0, false, false, false)
+        LocalPlayer.state:set("inv_busy", true, true)
 
         -- Use the Oxlib progress circle with a message
         if lib.progressCircle({
@@ -298,6 +318,8 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
             -- Cancel the animation
             StopAnimTask(ped, animDict, animName, 1.0)
         end
+        Wait(5000)
+        LocalPlayer.state:set("inv_busy", false, true)
     else
         -- Handle if the animation dictionary couldn't be loaded
         RSGCore.Functions.Notify("Failed to load animation dictionary.", 'error')
@@ -430,37 +452,44 @@ AddEventHandler('rsg-mining:client:StartRockPan', function()
     local coords = GetEntityCoords(ped)
     local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
     local mounted = IsPedOnMount(ped)
-    if mounted == false then
-        if panning == false then
-            for k,v in pairs(Config.WaterTypes) do 
-                if water == Config.WaterTypes[k]["waterhash"] then
-                    canPan = true
-                    break
+    local hasItem = RSGCore.Functions.HasItem("rock")
+    if hasItem then
+        if mounted == false then
+            if panning == false then
+                for k,v in pairs(Config.WaterTypes) do 
+                    if water == Config.WaterTypes[k]["waterhash"] then
+                        canPan = true
+                        break
+                    end
                 end
-            end
-            if canPan == true then
-                panning = true
-                AttachPan()
-                CrouchAnim()
-                Wait(6000)
-                ClearPedTasks(ped)
-                GoldShake()
-                local randomwait = math.random(12000,28000)
-                Wait(randomwait)
-                DeletePan(prop_goldpan)
-                --if hotspot == true then
-                    TriggerServerEvent('rsg-mining:server:washrocks')
-                --end
-                panning = false
-                canPan = false
+                if canPan == true then
+                    panning = true
+                    AttachPan()
+                    CrouchAnim()
+                    LocalPlayer.state:set("inv_busy", true, true)
+                    Wait(6000)
+                    ClearPedTasks(ped)
+                    GoldShake()
+                    local randomwait = math.random(12000,28000)
+                    Wait(randomwait)
+                    DeletePan(prop_goldpan)
+                    --if hotspot == true then
+                        TriggerServerEvent('rsg-mining:server:washrocks')
+                    --end
+                    panning = false
+                    canPan = false
+                    LocalPlayer.state:set("inv_busy", false, true)
+                else
+                    lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
+                end
             else
-                lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
+                lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
             end
         else
-            lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
+            lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
         end
     else
-        lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
+        lib.notify({ title = 'error', description = 'You dont have rocks', type = 'error' })
     end
 end) 
 
@@ -470,38 +499,45 @@ AddEventHandler('rsg-mining:client:StartGoldPan', function()
     local coords = GetEntityCoords(ped)
     local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
     local mounted = IsPedOnMount(ped)
-    if mounted == false then
-        if panning == false then
-            for k,v in pairs(Config.WaterTypes) do 
-                if water == Config.WaterTypes[k]["waterhash"] then
-                    canPan = true
-                    break
+    local hasItem = RSGCore.Functions.HasItem("rock")
+    if hasItem then
+        if mounted == false then
+            if panning == false then
+                for k,v in pairs(Config.WaterTypes) do 
+                    if water == Config.WaterTypes[k]["waterhash"] then
+                        canPan = true
+                        break
+                    end
                 end
-            end
-            if canPan == true then
-                panning = true
-                AttachPan()
-                CrouchAnim()
-                Wait(6000)
-                ClearPedTasks(ped)
-                GoldShake()
-                local randomwait = math.random(12000,28000)
-                Wait(randomwait)
-                DeletePan(prop_goldpan)
-                if hotspot == true then
-                    TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+                if canPan == true then
+                    panning = true
+                    AttachPan()
+                    CrouchAnim()
+                    LocalPlayer.state:set("inv_busy", true, true)
+                    Wait(6000)
+                    ClearPedTasks(ped)
+                    GoldShake()
+                    local randomwait = math.random(12000,28000)
+                    Wait(randomwait)
+                    DeletePan(prop_goldpan)
+                    if hotspot == true then
+                        TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+                    else
+                        TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
+                    end
+                    panning = false
+                    canPan = false
+                    LocalPlayer.state:set("inv_busy", false, true)
                 else
-                    TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
+                    lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
                 end
-                panning = false
-                canPan = false
             else
-                lib.notify({ title = 'Need river', description = 'you need the river to goldpan', type = 'primary' })
+                lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
             end
         else
-            lib.notify({ title = 'Need item', description = 'you are already goldpanning', type = 'error' })
+            lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
         end
     else
-        lib.notify({ title = 'error', description = 'you are mounted', type = 'error' })
+        lib.notify({ title = 'error', description = 'You need a Goldpan to do this', type = 'error' })
     end
 end)
