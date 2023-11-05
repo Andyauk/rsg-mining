@@ -3,7 +3,6 @@ local miningstarted = false
 local mining
 local mineAnimation = 'amb_work@world_human_pickaxe@wall@male_d@base'
 local anim = 'base'
-local cooldownSecondsRemaining = Config.Cooldown
 
 local LoadAnimDict = function(dict)
     local isLoaded = HasAnimDictLoaded(dict)
@@ -51,24 +50,26 @@ Citizen.CreateThread(function()
 end)
 
 -- cooldown timer
-local function cooldownTimer()
-    Citizen.CreateThread(function()
-        while cooldownSecondsRemaining > 0 do
-            Wait(1000)
-            cooldownSecondsRemaining = cooldownSecondsRemaining - 1
-            --print(cooldownSecondsRemaining)
-        end
-    end)
-end
+-- local function cooldownTimer()
+--     Citizen.CreateThread(function()
+--         local cooldownSecondsRemaining = Config.Cooldown
+--         while cooldownSecondsRemaining > 0 do
+--             Wait(1000)
+--             cooldownSecondsRemaining = cooldownSecondsRemaining - 1
+--             --print(cooldownSecondsRemaining)
+--         end
+--     end)
+-- end
 
 RegisterNetEvent('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
     local hasItem = RSGCore.Functions.HasItem(Config.itemMining, 1)
     local chance = math.random(1, 100)
-    if isBusy == false and cooldownSecondsRemaining == 0 then
+    -- if cooldownSecondsRemaining == 0 then    
+    local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+    if success == true then
         if miningstarted == false then
             if hasItem then
-                isBusy = true
                 local numberGenerator = math.random(1, 100)
                 if numberGenerator <= 5 then
                     TriggerServerEvent('rsg-mining:server:breakpickaxe')
@@ -106,8 +107,7 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
                         miningstarted = false
                     end)
                 end
-                cooldownTimer()
-                isBusy = false
+                --cooldownTimer()
             else
                 lib.notify({ title = 'Error', description = 'You don\'t have a pickaxe!', type = 'error' })
             end
@@ -115,8 +115,12 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
             lib.notify({ title = 'Inform', description = 'You are already doing something!', type = 'primary' })
         end
     else
-        lib.notify({ title = 'Inform', description = 'Rest your muscles!', type = 'primary' })
+        SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
+        lib.notify({ title = 'Try again!', description = 'Have you never used a pickaxe?', type = 'error' })
     end
+    -- else
+    --    lib.notify({ title = 'Inform', description = 'Rest your muscles!', type = 'primary' })
+    -- end
 end)
 
 AddEventHandler('rsg-mining:client:MineAnimation', function()
