@@ -16,6 +16,7 @@ local LoadAnimDict = function(dict)
 end
 
 
+
 ---------------------------
 -- draw marker if set to true in config
 ---------------------------
@@ -281,8 +282,9 @@ end)
 -- do cooking
 RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smelttime, receive, giveamount, smeltamount)
     local ped = PlayerPedId()
-    local animDict = 'script_common@shared_scenarios@kneel@mourn@female@a@base'
-    local animName = 'base'
+    local animDict = 'amb_work@prop_human_repair_wagon_wheel_on@front@male_a@idle_a'
+    local animName = 'idle_a'
+    
 
     RSGCore.Functions.RequestAnimDict(animDict)
 
