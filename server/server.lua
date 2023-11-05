@@ -35,19 +35,19 @@ end
 -- use item
 ---------------------------
 -- use goldsmelt
-RSGCore.Functions.CreateUseableItem("goldsmelt", function(source, item)
+RSGCore.Functions.CreateUseableItem(Config.itemSmelt, function(source, item)
     local src = source
 	TriggerClientEvent('rsg-mining:client:setupgoldsmelt', src, item.name)
 end)
 
 -- use goldpan
-RSGCore.Functions.CreateUseableItem("goldpan", function(source, item)
+RSGCore.Functions.CreateUseableItem(Config.itemGoldpan, function(source, item)
     local src = source
     TriggerClientEvent("rsg-mining:client:StartGoldPan", src, item.name)
 end)
 
---[[]] 
-RSGCore.Functions.CreateUseableItem("rock", function(source, item)
+-- use rock
+RSGCore.Functions.CreateUseableItem(Config.itemRock, function(source, item)
     local src = source
 	TriggerClientEvent('rsg-mining:client:StartRockPan', src, item.name)
 end) 
@@ -65,8 +65,8 @@ AddEventHandler('rsg-mining:server:givestone', function()
     local playername = Player.PlayerData.charinfo.firstname .. " " .. Player.PlayerData.charinfo.lastname
     local citizenid = Player.PlayerData.citizenid
 
-    Player.Functions.AddItem('rock', rock)
-    TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['rock'], "add")
+    Player.Functions.AddItem(Config.itemRock, rock)
+    TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[Config.itemRock], "add")
 
     if chance <= 50 then
         local salt = math.random(1, 3)
@@ -83,9 +83,9 @@ RegisterServerEvent('rsg-mining:server:breakpickaxe')
 AddEventHandler('rsg-mining:server:breakpickaxe', function(item)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-    if item == 'pickaxe' then
-        Player.Functions.RemoveItem('pickaxe', 1)
-        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['pickaxe'], "add")
+    if item == Config.itemMining then
+        Player.Functions.RemoveItem(Config.itemMining, 1)
+        TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[Config.itemMining], "add")
         
         TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.your_pickaxe_broke'), type = 'success' })
             
@@ -112,7 +112,7 @@ RSGCore.Functions.CreateCallback('rsg-mining:server:checkingsmeltitems', functio
                 cb(true)
             end
         else
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.you_dont_have_the_required_items').. RSGCore.Shared.Items[tostring(v.item)].label, type = 'error' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  'You dont have the required items '.. RSGCore.Shared.Items[tostring(v.item)].label, type = 'error' })
             cb(false)
             return
         end
@@ -139,7 +139,7 @@ AddEventHandler('rsg-mining:server:finishsmelting', function(smeltitems, receive
     TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[receive], "add")
     local labelReceive = RSGCore.Shared.Items[receive].label
 
-    TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.smelting_successful')..' '..smeltamount..' ' .. labelReceive, type = 'success' })
+    TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  'Smelting successful'..' '..smeltamount..' ' .. labelReceive, type = 'success' })
 
 end)
 
@@ -152,7 +152,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     local chance = math.random(1, 100)
-    local checkItem = Player.Functions.GetItemByName('rock')
+    local checkItem = Player.Functions.GetItemByName(Config.itemRock)
     local item = Config.RareAward[math.random(1, #Config.RareAward)]
     local item2 = Config.UncommonAward[math.random(1, #Config.UncommonAward)]
     local item3 = Config.Normal[math.random(1, #Config.Normal)]
@@ -162,96 +162,102 @@ AddEventHandler('rsg-mining:server:washrocks', function()
         if checkItem.amount > 3 and chance <= 13 then
             local ore = math.random(1, 3)
             local remaining = 0
-            Player.Functions.RemoveItem('rock', 3)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 3)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item, ore)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "add")
 
             if ore <= 2 then
                 remaining = 3 - ore
-                Player.Functions.AddItem('rock', remaining)
-                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "add")
+                Player.Functions.AddItem(Config.itemRock, remaining)
+                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "add")
             else end
 
         elseif checkItem.amount <= 2 then
 
-            Player.Functions.RemoveItem('rock', 1)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 1)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item, 1)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "add")
+
         end
+
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
 
     elseif chance > 15 and chance <= 45 then
 
         if checkItem.amount >= 3 then
             local ore = math.random(1, 3)
             local remaining = 0
-            Player.Functions.RemoveItem('rock', 3)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 3)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item2, ore)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item2], "add")
 
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
+
             if ore <= 2 then
-
                 remaining = 3 - ore
-                Player.Functions.AddItem('rock', remaining)
-                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "add")
-
+                Player.Functions.AddItem(Config.itemRock, remaining)
+                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "add")
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add rock and destroyed rock', type = 'primary' })
             else end
-            
+
         elseif checkItem.amount <= 2 then
-            Player.Functions.RemoveItem('rock', 1)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 1)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item2, 1)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item2], "add")
         end
+
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
 
     elseif chance > 47 and chance <= 68 then
 
         if checkItem.amount >= 3 then
             local ore = math.random(1, 3)
             local remaining = 0
-            Player.Functions.RemoveItem('rock', 3)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 3)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item3, ore)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item3], "add")
 
             if ore <= 2 then
                 remaining = 3 - ore
-                Player.Functions.AddItem('rock', remaining)
-                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "add")
+                Player.Functions.AddItem(Config.itemRock, remaining)
+                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "add")
 
             else end
 
         elseif checkItem.amount <= 2 then
-            Player.Functions.RemoveItem('rock', 1)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 1)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
             Player.Functions.AddItem(item3, 1)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item3], "add")
         end
+
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
 
     elseif chance > 50 then
 
         if checkItem.amount >= 3 then
             local ore = math.random(1, 3)
             local remaining = 0
-            Player.Functions.RemoveItem('rock', 3)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
-            
+            Player.Functions.RemoveItem(Config.itemRock, 3)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
 
             if ore <= 2 then
                 remaining = 3 - ore
-                Player.Functions.AddItem('rock', remaining)
-                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "add")
-
+                Player.Functions.AddItem(Config.itemRock, remaining)
+                TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "add")
             else end
 
         elseif checkItem.amount <= 2 then
-            Player.Functions.RemoveItem('rock', 1)
-            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items['rock'], "remove")
+            Player.Functions.RemoveItem(Config.itemRock, 1)
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
         end
-        
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.destroyed_rock'), type = 'error' })
+
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  'Destroyed rock', type = 'error' })
 
     end
 end)
@@ -281,8 +287,8 @@ AddEventHandler('rsg-mining:server:rewardgoldpaning', function()
 
             -- webhook
             TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Found 🌟', 'yellow', firstname..' '..lastname..' found a gold nugget!')
-        
-        elseif chance >= 50 and chance <= 80 then -- medium reward
+
+        elseif chance >= 50 and chance <= 100 then -- medium reward
             local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
             local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
             -- add items
@@ -292,25 +298,9 @@ AddEventHandler('rsg-mining:server:rewardgoldpaning', function()
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
 
             TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
+
             -- webhook
             TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Fever 🌟', 'yellow', firstname..' '..lastname..' found two gold nuggets!')
-        
-        elseif chance > 80 then -- large reward
-            local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
-            local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
-            local item3 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
-            -- add items
-            Player.Functions.AddItem(item1, Config.LargeRewardAmount)
-            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
-            Player.Functions.AddItem(item2, Config.LargeRewardAmount)
-            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
-            Player.Functions.AddItem(item3, Config.LargeRewardAmount)
-            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
-
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Jackpot', description = 'gold fever rewards..', type = 'primary' })
-
-            -- webhook
-            TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Jackpot Gold Find 🌟', 'yellow', firstname..' '..lastname..' found three gold nuggets!')
         end
     else
 
@@ -349,7 +339,6 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
                 Player.Functions.AddItem(item2, Config.HSMediumRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
-                
 
                 TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
 
@@ -360,6 +349,7 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 local item1 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
                 local item2 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
                 local item3 = Config.RewardPaning[math.random(1, #Config.RewardPaning)]
+
                 -- add items
                 Player.Functions.AddItem(item1, Config.HSLargeRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
@@ -367,8 +357,9 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
                 Player.Functions.AddItem(item3, Config.HSLargeRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
-                
+
                 TriggerClientEvent('ox_lib:notify', src, {title = 'Jackpot', description = 'gold fever rewards..', type = 'primary' })
+
                 -- webhook
                 TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Jackpot Gold Find 🌟', 'yellow', firstname..' '..lastname..' found three gold nuggets!')
             end
