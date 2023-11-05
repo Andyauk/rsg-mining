@@ -323,31 +323,33 @@ end
 
 RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
 AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
-	local ped = PlayerPedId()
-    if goldsmelt == true then
-		CrouchAnim()
-		Wait(6000)
-		ClearPedTasks(ped)
-        SetEntityAsMissionEntity(smelt)
-        DeleteObject(smelt)
-        
-        lib.notify({ title = 'Save item', description = 'your iten is pickup', type = 'inform' })
-		
-        goldsmelt = false
-    elseif goldsmelt == false then
-		CrouchAnim()
-		Wait(6000)
-		ClearPedTasks(ped)
-		local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, -1.55))
-		local prop = CreateObject(GetHashKey(Config.Prop), x, y, z, true, false, true)
-		SetEntityHeading(prop, GetEntityHeading(PlayerPedId()))
-		PlaceObjectOnGroundProperly(prop)
-		smelt = prop
+    if Config.UseGoldSmeltItem == true then
+        local ped = PlayerPedId()
+        if goldsmelt == true then
+            CrouchAnim()
+            Wait(6000)
+            ClearPedTasks(ped)
+            SetEntityAsMissionEntity(smelt)
+            DeleteObject(smelt)
+            
+            lib.notify({ title = 'Save item', description = 'your iten is pickup', type = 'inform' })
+            
+            goldsmelt = false
+        elseif goldsmelt == false then
+            CrouchAnim()
+            Wait(6000)
+            ClearPedTasks(ped)
+            local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, -1.55))
+            local prop = CreateObject(GetHashKey(Config.Prop), x, y, z, true, false, true)
+            SetEntityHeading(prop, GetEntityHeading(PlayerPedId()))
+            PlaceObjectOnGroundProperly(prop)
+            smelt = prop
 
-        lib.notify({ title = 'Deployed item', description = 'your gold smelt deployed', type = 'inform' })
-		
-        goldsmelt = true
-	end
+            lib.notify({ title = 'Deployed item', description = 'your gold smelt deployed', type = 'inform' })
+            
+            goldsmelt = true
+        end
+    else end
 end, false)
 
 ---------------------------

@@ -1,6 +1,7 @@
 Config = {}
 
 Config.img = "rsg-inventory/html/images/"
+Config.UseGoldSmeltItem = true
 Config.Prop = 'p_goldsmeltburner01x' --'p_baseburner01x', 
 
 ---------------------------
