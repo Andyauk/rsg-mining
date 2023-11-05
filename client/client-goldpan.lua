@@ -138,44 +138,50 @@ AddEventHandler('rsg-mining:client:StartGoldPan', function()
     local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
     local mounted = IsPedOnMount(ped)
     local hasItem = RSGCore.Functions.HasItem(Config.itemGoldpan)
-    if hasItem then
-        if mounted == false then
-            if panning == false then
-                for k,v in pairs(Config.WaterTypes) do 
-                    if water == Config.WaterTypes[k]["waterhash"] then
-                        canPan = true
-                        break
+    local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+    if success == true then
+        if hasItem then
+            if mounted == false then
+                if panning == false then
+                    for k,v in pairs(Config.WaterTypes) do 
+                        if water == Config.WaterTypes[k]["waterhash"] then
+                            canPan = true
+                            break
+                        end
                     end
-                end
-                if canPan == true then
-                    panning = true
-                    AttachPan()
-                    CrouchAnim()
-                    LocalPlayer.state:set("inv_busy", true, true)
-                    Wait(6000)
-                    ClearPedTasks(ped)
-                    GoldShake()
-                    local randomwait = math.random(12000,28000)
-                    Wait(randomwait)
-                    DeletePan(prop_goldpan)
-                    if hotspot == true then
-                        TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+                    if canPan == true then
+                        panning = true
+                        AttachPan()
+                        CrouchAnim()
+                        LocalPlayer.state:set("inv_busy", true, true)
+                        Wait(6000)
+                        ClearPedTasks(ped)
+                        GoldShake()
+                        local randomwait = math.random(12000,28000)
+                        Wait(randomwait)
+                        DeletePan(prop_goldpan)
+                        if hotspot == true then
+                            TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
+                        else
+                            TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
+                        end
+                        panning = false
+                        canPan = false
+                        LocalPlayer.state:set("inv_busy", false, true)
                     else
-                        TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
+                        lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
                     end
-                    panning = false
-                    canPan = false
-                    LocalPlayer.state:set("inv_busy", false, true)
                 else
-                    lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
+                    lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
                 end
             else
-                lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
+                lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
             end
         else
-            lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
+            lib.notify({ title = 'Error', description = 'You need a Goldpan to do this', type = 'error' })
         end
     else
-        lib.notify({ title = 'Error', description = 'You need a Goldpan to do this', type = 'error' })
+        SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
+        lib.notify({ title = 'Try again!', description = 'Have you never used a Goldpan?', type = 'error' })
     end
 end)
