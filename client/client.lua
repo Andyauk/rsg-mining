@@ -311,15 +311,15 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
 
             -- Stop the animation
             StopAnimTask(ped, animDict, animName, 1.0)
+            LocalPlayer.state:set("inv_busy", false, true)
         else
             -- Handle cancelation or failure
             RSGCore.Functions.Notify("Smelting canceled or failed.", 'error')
 
             -- Cancel the animation
             StopAnimTask(ped, animDict, animName, 1.0)
+            LocalPlayer.state:set("inv_busy", false, true)
         end
-        Wait(5000)
-        LocalPlayer.state:set("inv_busy", false, true)
     else
         -- Handle if the animation dictionary couldn't be loaded
         RSGCore.Functions.Notify("Failed to load animation dictionary.", 'error')
