@@ -53,7 +53,7 @@ local function AttachPan()
     if not DoesEntityExist(prop_goldpan) then
     local ped = PlayerPedId()
     local coords = GetEntityCoords(ped)
-    local modelHash = GetHashKey(Config.propGoldpan)
+    local modelHash = GetHashKey("P_CS_MININGPAN01X")
     LoadModel(modelHash)
     prop_goldpan = CreateObject(modelHash, coords.x+0.30, coords.y+0.10,coords.z, true, false, false)
     SetEntityVisible(prop_goldpan, true)

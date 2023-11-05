@@ -4,6 +4,7 @@ local mining
 local mineAnimation = 'amb_work@world_human_pickaxe@wall@male_d@base'
 local anim = 'base'
 
+
 local LoadAnimDict = function(dict)
     local isLoaded = HasAnimDictLoaded(dict)
 
@@ -65,62 +66,64 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
     local hasItem = RSGCore.Functions.HasItem(Config.itemMining, 1)
     local chance = math.random(1, 100)
-    -- if cooldownSecondsRemaining == 0 then    
-    local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
-    if success == true then
-        if miningstarted == false then
-            if hasItem then
-                local numberGenerator = math.random(1, 100)
-                if numberGenerator <= 5 then
-                    TriggerServerEvent('rsg-mining:server:breakpickaxe')
-                else
-                    local coords = GetEntityCoords(player)
-                    local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
-                    local pickaxe = CreateObject(GetHashKey(Config.PropMining), coords, true, true, true)
-                    miningstarted = true
+    -- if cooldownSecondsRemaining == 0 then
+        local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+        if success == true then
+            if miningstarted == false then
+                if hasItem then
+                    local numberGenerator = math.random(1, 100)
+                    if numberGenerator <= 5 then
+                        TriggerServerEvent('rsg-mining:server:breakpickaxe')
+                    else
+                        local coords = GetEntityCoords(player)
+                        local boneIndex = GetEntityBoneIndexByName(player, "SKEL_R_Finger00")
+                        local pickaxe = CreateObject(GetHashKey("p_pickaxe01x"), coords, true, true, true)
+                        miningstarted = true
 
-                    SetCurrentPedWeapon(player, "WEAPON_UNARMED", true)
-                    FreezeEntityPosition(player, true)
-                    ClearPedTasksImmediately(player)
-                    AttachEntityToEntity(pickaxe, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
-
-                    TriggerEvent('rsg-mining:client:MineAnimation')
-                    LocalPlayer.state:set("inv_busy", true, true)
-
-                    RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
-                    {
-                        disableMovement = true,
-                        disableCarMovement = true,
-                        disableMouse = false,
-                        disableCombat = true,
-                    }, {}, {}, {}, function()
-
+                        SetCurrentPedWeapon(player, "WEAPON_UNARMED", true)
+                        FreezeEntityPosition(player, true)
                         ClearPedTasksImmediately(player)
-                        FreezeEntityPosition(player, false)
+                        AttachEntityToEntity(pickaxe, player, boneIndex, -0.35, -0.21, -0.39, -8.0, 47.0, 11.0, true, false, true, false, 0, true)
 
-                        TriggerServerEvent('rsg-mining:server:givestone')
-                        LocalPlayer.state:set("inv_busy", false, true)
-                        SetEntityAsNoLongerNeeded(pickaxe)
-                        DeleteEntity(pickaxe)
-                        DeleteObject(pickaxe)
+                        TriggerEvent('rsg-mining:client:MineAnimation')
+                        LocalPlayer.state:set("inv_busy", true, true)
 
-                        miningstarted = false
-                    end)
+                        RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
+                        {
+                            disableMovement = true,
+                            disableCarMovement = true,
+                            disableMouse = false,
+                            disableCombat = true,
+                        }, {}, {}, {}, function()
+
+                            ClearPedTasksImmediately(player)
+                            FreezeEntityPosition(player, false)
+
+                            TriggerServerEvent('rsg-mining:server:givestone')
+                            LocalPlayer.state:set("inv_busy", false, true)
+                            SetEntityAsNoLongerNeeded(pickaxe)
+                            DeleteEntity(pickaxe)
+                            DeleteObject(pickaxe)
+
+                            miningstarted = false
+                        end)
+                    end
+                    -- cooldownTimer()
+                else
+                    lib.notify({ title = 'Error', description = 'You don\'t have a pickaxe!', type = 'error' })
                 end
-                --cooldownTimer()
             else
-                lib.notify({ title = 'Error', description = 'You don\'t have a pickaxe!', type = 'error' })
+                lib.notify({ title = 'Inform', description = 'You are already doing something!', type = 'primary' })
             end
         else
-            lib.notify({ title = 'Inform', description = 'You are already doing something!', type = 'primary' })
+            SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
+            lib.notify({ title = 'Try again!', description = 'Have you never used a pickaxe?', type = 'error' })
         end
-    else
-        SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
-        lib.notify({ title = 'Try again!', description = 'Have you never used a pickaxe?', type = 'error' })
-    end
+
     -- else
     --    lib.notify({ title = 'Inform', description = 'Rest your muscles!', type = 'primary' })
     -- end
+
 end)
 
 AddEventHandler('rsg-mining:client:MineAnimation', function()
