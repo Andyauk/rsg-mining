@@ -149,7 +149,7 @@ Config.SmeltOptions = {
 
 Config.KeyMining = 'E'
 
-Config.Cooldown = 20 -- seconds
+-- Config.Cooldown = 20 -- seconds
 Config.itemMining = 'pickaxe'
 
 -- set item rewards amount
