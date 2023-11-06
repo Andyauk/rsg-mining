@@ -1,12 +1,22 @@
 Config = {}
 
 Config.img = "rsg-inventory/html/images/"
-Config.UseGoldSmeltItem = true
-Config.Prop = 'p_goldsmeltburner01x' --'p_baseburner01x', 
 
 ---------------------------
--- goldpaning 
+-- CONFIG goldpaning 
 ---------------------------
+
+Config.itemGoldpan = "goldpan"
+Config.itemRock = "rock"
+
+-- set the amount of nuggets to give
+Config.GoldChance = 80 -- (80 = 20% changce of not finding gold) / (70 = 30% changce of not finding gold).. and so on
+
+-- set the amount of nuggets to give in hotspot
+Config.HSSmallRewardAmount   = 1
+Config.HSMediumRewardAmount  = 2
+Config.HSHSLargeRewardAmount = 3
+Config.HSGoldChance = 20 -- (70 = 30% changce of not finding gold
 
 Config.HotspotZones = { 
     [1] = {
@@ -52,68 +62,29 @@ Config.WaterTypes = {
 }
 
 Config.RewardPaning = {
-
-	"salt",
-    "p_baitworm01x",
-    "p_crawdad01x",
-    "sand",
-    'rock'
-
+    'coal',
+    "rock",
+    'wood',
+    'stone',
 }
 
--- set the amount of nuggets to give
---Config.SmallRewardAmount  = 1 -- one reward
--- Config.MediumRewardAmount = 1 -- two rewards
-Config.LargeRewardAmount  = 1 -- three rewards
-Config.GoldChance = 80 -- (80 = 20% changce of not finding gold) / (70 = 30% changce of not finding gold).. and so on
-
--- set the amount of nuggets to give in hotspot
-Config.HSSmallRewardAmount   = 1
-Config.HSMediumRewardAmount  = 2
-Config.HSHSLargeRewardAmount = 3
-Config.HSGoldChance = 20 -- (70 = 30% changce of not finding gold
-
-
 ---------------------------
--- smelt
+-- CONFIG smelt
 ---------------------------
 
+Config.itemSmelt = "goldsmelt"
+Config.UseGoldSmeltItem = true
+
+Config.SmeltLocations = true -- can active 'true' / desactive 'false'
 Config.SmeltingLocations = {
-    {        name = 'Smelter',         coords = vector3(-370.5368, 795.87225, 115.66062),         heading = 125.98059,         minZ = 114.66062,         maxZ = 117.66062,         showblip = true    },
+    {        name = 'Smelter',         coords = vector3(-370.5368, 795.87225, 115.66062),         heading = 125.98059,         minZ = 114.66062,        maxZ = 117.66062,        showblip = true    },
     {        name = 'Smelter',         coords = vector3(-2396.335, -2376.617, 61.053844),         heading = 355.44912,         minZ = 59.29764,         maxZ = 63.29764,         showblip = true    }, 
     {        name = 'Smelter',         coords = vector3(2516.4436, -1456.448, 46.146656),         heading = 272.17373,         minZ = 44.29764,         maxZ = 48.29764,         showblip = true    },
-    {        name = 'Smelter',         coords = vector3(-370.5368, 795.87225, 115.66062),         heading = 125.98059,        minZ = 114.66062,        maxZ = 117.66062,         showblip = true    },
+    {        name = 'Smelter',         coords = vector3(-370.5368, 795.87225, 115.66062),         heading = 125.98059,         minZ = 114.66062,        maxZ = 117.66062,        showblip = true    },
 }
 
-
 Config.SmeltOptions = {
-    {
-        category = "Gold",
-        smelttime = 20000,
-        smeltitems = {
-            [1] = { item = "largenugget", amount = 20 },
-        },
-        receive = "goldbar",
-        giveamount = 1
-    },
-    {
-        category = "Gold",
-        smelttime = 20000,
-        smeltitems = {
-            [1] = { item = "mediumnugget", amount = 40 },
-        },
-        receive = "goldbar",
-        giveamount = 1
-    },
-    {
-        category = "Gold",
-        smelttime = 20000,
-        smeltitems = {
-            [1] = { item = "smallnugget", amount = 80 },
-        },
-        receive = "goldbar",
-        giveamount = 1
-    },
+
     {
         category = "Ore",
         smelttime = 20000,
@@ -158,8 +129,8 @@ Config.SmeltOptions = {
         },
         receive = "steel",
         giveamount = 1
-    },
-    {
+    }, 
+     {
         category = "Ore",
         smelttime = 20000,
         smeltitems = {
@@ -176,6 +147,11 @@ Config.SmeltOptions = {
 -- mining
 ---------------------------
 
+Config.KeyMining = 'E'
+
+-- Config.Cooldown = 20 -- seconds
+Config.itemMining = 'pickaxe'
+
 -- set item rewards amount
 Config.SmallRewardAmount = 1
 Config.MediumRewardAmount = 2
@@ -185,7 +161,7 @@ Config.RareAward = {
     'diamond',
     'ruby',
     'emerald',
-    'goldore',    
+    'goldore',
     'silver_ore'
 }
 
@@ -233,6 +209,5 @@ Config.MiningLocations = {
     {name = 'Minas',	location = 'mining25', coords = vector3(-1388.55, 1177.58, 221.88),			showblip = false, showmarker = false},
     {name = 'Minas',	location = 'mining26', coords = vector3(-1392.99, 1186.0, 222.01),			showblip = false, showmarker = false},
 	{name = 'Minas',	location = 'mining27', coords = vector3(-1418.91, 1193.09, 225.37),			showblip = false, showmarker = false},
-	{name = 'Minas GriW',	location = 'mining28', coords = vector3(-1393.31, 1185.81, 221.96),		showblip = false, showmarker = false},
-
+	{name = 'Minas GriW',	location = 'mining28', coords = vector3(-1393.31, 1185.81, 221.96),			showblip = false, showmarker = false},
 }

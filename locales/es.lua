@@ -1,7 +1,6 @@
 local Translations = {
     error = {
         you_dont_have_pickaxe = "¡No tienes un pico!",
-        you_dont_have_the_required_items = "¡Te hacen Falta materiles! ",
         something_went_wrong = '¡algo salió mal!',
         no_stone = 'No tienes mas piedra para lavar!',
         destroyed_rock = 'Destruistes la piedra, Ya no hay mas suerte con esta! ',
