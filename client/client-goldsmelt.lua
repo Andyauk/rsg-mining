@@ -53,7 +53,7 @@ for _, v in ipairs(Config.SmeltOptions) do
     local smeltitemsMetadata = {}
     local setheader = RSGCore.Shared.Items[tostring(v.receive)].label
     local itemimg = "nui://"..Config.img..RSGCore.Shared.Items[tostring(v.receive)].image
-
+    print(setheader, v.receive)
     for i, smeltitem in ipairs(v.smeltitems) do
         table.insert(smeltitemsMetadata, { label = RSGCore.Shared.Items[smeltitem.item].label, value = smeltitem.amount })
     end
@@ -223,7 +223,7 @@ local function CrouchAnim()
     TaskPlayAnim(ped, dict, "inspectfloor_player", 0.5, 8.0, -1, 1, 0, false, false, false)
 end
 
-RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
+--[[ RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
 AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
 	if Config.UseGoldSmeltItem == true then
         local ped = PlayerPedId()
@@ -252,4 +252,37 @@ AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
             goldsmelt = true
         end
     else end
+end, false) ]]
+
+RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
+AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
+    if Config.UseGoldSmeltItem then
+        local ped = PlayerPedId()
+        local x, y, z
+
+        CrouchAnim()
+        Wait(6000)
+        ClearPedTasks(ped)
+
+        if goldsmelt then
+            ClearPedTasks(ped)
+            SetEntityAsMissionEntity(smelt)
+            DeleteObject(smelt)
+            lib.notify({ title = 'Save item', description = 'your item is picked up', type = 'inform' })
+            goldsmelt = false
+        else
+            CrouchAnim()
+            Wait(6000)
+            ClearPedTasks(ped)
+
+            x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, -1.55))
+            local prop = CreateObject(GetHashKey('p_goldsmeltburner01x'), x, y, z, true, false, true)
+            SetEntityHeading(prop, GetEntityHeading(PlayerPedId()))
+            PlaceObjectOnGroundProperly(prop)
+            smelt = prop
+
+            lib.notify({ title = 'Deployed item', description = 'your gold smelt is deployed', type = 'inform' })
+            goldsmelt = true
+        end
+    end
 end, false)
