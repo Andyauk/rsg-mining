@@ -10,7 +10,6 @@
 - add rsg-mining to your resources folder
 - add items to your "\rsg-core\shared\items.lua"
 - add images to your "\rsg-inventory\html\images"
-- read integration.lua
 
 
 # Starting the resource

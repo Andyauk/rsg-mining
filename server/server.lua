@@ -112,7 +112,7 @@ RSGCore.Functions.CreateCallback('rsg-mining:server:checkingsmeltitems', functio
                 cb(true)
             end
         else
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  'You dont have the required items '.. RSGCore.Shared.Items[tostring(v.item)].label, type = 'error' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.missing_items').. RSGCore.Shared.Items[tostring(v.item)].label, type = 'error' })
             cb(false)
             return
         end
@@ -139,7 +139,7 @@ AddEventHandler('rsg-mining:server:finishsmelting', function(smeltitems, receive
     TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[receive], "add")
     local labelReceive = RSGCore.Shared.Items[receive].label
 
-    TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  'Smelting successful'..' '..smeltamount..' ' .. labelReceive, type = 'success' })
+    TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.smelting_successful')..' '..smeltamount..' ' .. labelReceive, type = 'success' })
 
 end)
 
@@ -182,7 +182,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
 
         end
 
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.rock_destroyed_but_item'), type = 'success' })
 
     elseif chance > 15 and chance <= 45 then
 
@@ -194,13 +194,13 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             Player.Functions.AddItem(item2, ore)
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item2], "add")
 
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.rock_destroyed_but_item'), type = 'success' })
 
             if ore <= 2 then
                 remaining = 3 - ore
                 Player.Functions.AddItem(Config.itemRock, remaining)
                 TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "add")
-                TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add rock and destroyed rock', type = 'primary' })
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Info', description =  Lang:t('primary.rock_returned'), type = 'inform' })
             else end
 
         elseif checkItem.amount <= 2 then
@@ -210,7 +210,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item2], "add")
         end
 
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.rock_destroyed_but_item'), type = 'success' })
 
     elseif chance > 47 and chance <= 68 then
 
@@ -236,7 +236,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item3], "add")
         end
 
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Wow..', description =  'Add item and destroyed rock', type = 'primary' })
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description =  Lang:t('success.rock_destroyed_but_item'), type = 'success' })
 
     elseif chance > 50 then
 
@@ -257,7 +257,7 @@ AddEventHandler('rsg-mining:server:washrocks', function()
             TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[Config.itemRock], "remove")
         end
 
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  'Destroyed rock', type = 'error' })
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.destroyed_rock'), type = 'error' })
 
     end
 end)
@@ -283,7 +283,7 @@ AddEventHandler('rsg-mining:server:rewardgoldpaning', function()
             Player.Functions.AddItem(item1, Config.SmallRewardAmount)
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
 
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description =  'not much this pan', type = 'primary' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.no_gold_this_time'), type = 'inform' })
 
             -- webhook
             TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Found 🌟', 'yellow', firstname..' '..lastname..' found a gold nugget!')
@@ -297,14 +297,14 @@ AddEventHandler('rsg-mining:server:rewardgoldpaning', function()
             Player.Functions.AddItem(item2, Config.MediumRewardAmount)
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
 
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description = Lang:t('success.jack_pot_small'), type = 'success' })
 
             -- webhook
             TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Gold Fever 🌟', 'yellow', firstname..' '..lastname..' found two gold nuggets!')
         end
     else
 
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Best lucky', description = 'no gold this time..', type = 'primary' })
+        TriggerClientEvent('ox_lib:notify', src, {title = 'Eroor', description = Lang:t('error.no_gold_this_time'), type = 'error' })
 
     end
 end)
@@ -326,7 +326,7 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 Player.Functions.AddItem(item1, Config.HSSmallRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item1], "add")
 
-                TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description =  'not much this pan', type = 'primary' })
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description =  Lang:t('error.no_gold_this_time'), type = 'error' })
 
                 -- webhook
                 TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Gold Found 🌟', 'yellow', firstname..' '..lastname..' found a gold nugget!')
@@ -340,7 +340,7 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 Player.Functions.AddItem(item2, Config.HSMediumRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item2], "add")
 
-                TriggerClientEvent('ox_lib:notify', src, {title = 'Have lucky', description = 'looks like good gold', type = 'primary' })
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description = Lang:t('success.jack_pot_medium'), type = 'success' })
 
                 -- webhook
                 TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Gold Fever 🌟', 'yellow', firstname..' '..lastname..' found two gold nuggets!')
@@ -358,13 +358,13 @@ AddEventHandler('rsg-mining:server:hotspotrewardgoldpaning', function()
                 Player.Functions.AddItem(item3, Config.HSLargeRewardAmount)
                 TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items[item3], "add")
 
-                TriggerClientEvent('ox_lib:notify', src, {title = 'Jackpot', description = 'gold fever rewards..', type = 'primary' })
+                TriggerClientEvent('ox_lib:notify', src, {title = 'Success', description = Lang:t('success.jack_pot_fever'), type = 'success' })
 
                 -- webhook
                 TriggerEvent('rsg-log:server:CreateLog', 'goldpanning', 'Mega Jackpot Gold Find 🌟', 'yellow', firstname..' '..lastname..' found three gold nuggets!')
             end
         else
-            TriggerClientEvent('ox_lib:notify', src, {title = 'Best lucky', description = 'no gold this time..', type = 'primary' })
+            TriggerClientEvent('ox_lib:notify', src, {title = 'Error', description = Lang:t('error.no_gold_this_time'), type = 'error' })
     end
 end)
 

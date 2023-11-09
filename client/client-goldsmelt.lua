@@ -6,8 +6,8 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 
 for _, k in ipairs(Config.SmeltingLocations) do
     if Config.SmeltLocations == true then
-        exports['rsg-target']:AddBoxZone("Testing", k.coords, 1.45, 1.35, {
-        name = "Testing",
+        exports['rsg-target']:AddBoxZone("Smelter", k.coords, 1.45, 1.35, {
+        name = "Smelter",
         heading = k.heading,
         debugPoly = false,
         minZ = k.minZ,
@@ -18,7 +18,7 @@ for _, k in ipairs(Config.SmeltingLocations) do
                     type = "client",
                     event = "rsg-mining:client:smeltmenu",
                     icon = "fas fa-fire",
-                    label = "Smelt",
+                    label = Lang:t('menu.smelt'),
                 },
             },
             distance = 2.5
@@ -27,7 +27,7 @@ for _, k in ipairs(Config.SmeltingLocations) do
     exports['rsg-target']:AddTargetModel('p_goldsmeltburner01x', {
     options = {
         {   icon = 'far fa-gear',
-            label = "Smelt item", -- use text '' = 'Title example'
+            label = Lang:t('menu.smelt_item'), -- use text '' = 'Title example'
             type = "client",
             event = 'rsg-mining:client:smeltmenu',
         },},
@@ -76,7 +76,7 @@ for _, v in ipairs(Config.SmeltOptions) do
     if not categoryMenus[v.category] then
         categoryMenus[v.category] = {
             id = 'smelting_menu_' .. v.category,
-            title = 'Smelting Menu - ' .. v.category,
+            title = Lang:t('menu.smelt_menu') .. v.category,
             menu = 'smelting_main_menu',
             onBack = function() end,
             options = { option }
@@ -101,7 +101,7 @@ AddEventHandler('rsg-mining:client:smeltmenu', function()
     -- show main menu with categories
     local mainMenu = {
         id = 'smelting_main_menu',
-        title = 'Smelting Menu',
+        title = Lang:t('menu.smelt_menu'),
         options = {}
     }
 
@@ -172,14 +172,14 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
                 duration = smelttime, -- Adjust the duration as needed
                 position = 'bottom',
                 useWhileDead = false,
-                canCancel = false, -- Change to true if you want to allow canceling
+                canCancel = Config.AllowSmeltCanceling, -- Change to true if you want to allow canceling
                 anim = {
                     dict = animDict,
                     clip = 'empathise_headshake_f_001',
                     flag = 15,
                 },
                 disableControl = true, -- Disable player control during the animation
-                label = 'Smelting ' .. title, -- Your cooking message here
+                label = Lang:t('primary.smelting_item') .. title, -- Your cooking message here
             }) then
                 -- Cooking was successful
                 TriggerServerEvent('rsg-mining:server:finishsmelting', smeltitems, receive, giveamount, smeltamount)
@@ -190,7 +190,7 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
                 LocalPlayer.state:set("inv_busy", false, true)
             else
                 -- Handle cancelation or failure
-                RSGCore.Functions.Notify("Smelting canceled or failed.", 'error')
+                RSGCore.Functions.Notify(Lang:t('primary.cancelation_failure'), 'primary')
 
                 -- Cancel the animation
                 StopAnimTask(ped, animDict, animName, 1.0)
@@ -198,11 +198,11 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
             end
         else
             -- Handle if the animation dictionary couldn't be loaded
-            lib.notify({ title = 'Error', description = "Failed to load animation dictionary.", type = 'error' })
+            lib.notify({ title = 'Error', description = Lang:t('error.failed_animation'), type = 'error' })
         end
     else
         SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
-        lib.notify({ title = 'Try again!', description = 'Have you never craft?', type = 'error' })
+        lib.notify({ title = 'Error!', description = Lang:t('error.try_again'), type = 'error' })
     end
 end)
 
@@ -223,40 +223,9 @@ local function CrouchAnim()
     TaskPlayAnim(ped, dict, "inspectfloor_player", 0.5, 8.0, -1, 1, 0, false, false, false)
 end
 
---[[ RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
-AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
-	if Config.UseGoldSmeltItem == true then
-        local ped = PlayerPedId()
-        if goldsmelt == true then
-            CrouchAnim()
-            Wait(6000)
-            ClearPedTasks(ped)
-            SetEntityAsMissionEntity(smelt)
-            DeleteObject(smelt)
-
-            lib.notify({ title = 'Save item', description = 'your iten is pickup', type = 'inform' })
-
-            goldsmelt = false
-        elseif goldsmelt == false then
-            CrouchAnim()
-            Wait(6000)
-            ClearPedTasks(ped)
-            local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.75, -1.55))
-            local prop = CreateObject(GetHashKey('p_goldsmeltburner01x'), x, y, z, true, false, true)
-            SetEntityHeading(prop, GetEntityHeading(PlayerPedId()))
-            PlaceObjectOnGroundProperly(prop)
-            smelt = prop
-
-            lib.notify({ title = 'Deployed item', description = 'your gold smelt deployed', type = 'inform' })
-
-            goldsmelt = true
-        end
-    else end
-end, false) ]]
-
 RegisterNetEvent('rsg-mining:client:setupgoldsmelt')
 AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
-    if Config.UseGoldSmeltItem then
+    if Config.UseGoldSmeltItem == true then
         local ped = PlayerPedId()
         local x, y, z
 
@@ -268,7 +237,7 @@ AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
             ClearPedTasks(ped)
             SetEntityAsMissionEntity(smelt)
             DeleteObject(smelt)
-            lib.notify({ title = 'Save item', description = 'your item is picked up', type = 'inform' })
+            lib.notify({ title = 'Info', description = Lang:t('success.item_picked_up'), type = 'inform' })
             goldsmelt = false
         else
             CrouchAnim()
@@ -281,8 +250,8 @@ AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
             PlaceObjectOnGroundProperly(prop)
             smelt = prop
 
-            lib.notify({ title = 'Deployed item', description = 'your gold smelt is deployed', type = 'inform' })
+            lib.notify({ title = 'Info', description = Lang:t('success.item_set_up'), type = 'inform' })
             goldsmelt = true
         end
-    end
+    else end
 end, false)

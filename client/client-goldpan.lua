@@ -83,55 +83,7 @@ local function DeletePan(entity)
     ClearPedTasks(PlayerPedId())
 end
 
--- wash rock
---[[ RegisterNetEvent('rsg-mining:client:StartRockPan')
-AddEventHandler('rsg-mining:client:StartRockPan', function()
-    local ped = PlayerPedId()
-    local coords = GetEntityCoords(ped)
-    local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
-    local mounted = IsPedOnMount(ped)
-    local hasItem = RSGCore.Functions.HasItem(Config.itemRock)
-    local hasItem2 = RSGCore.Functions.HasItem(Config.itemGoldpan)
-    if hasItem and hasItem2 then
-        if mounted == false then
-            if panning == false then
-                for k,v in pairs(Config.WaterTypes) do 
-                    if water == Config.WaterTypes[k]["waterhash"] then
-                        canPan = true
-                        break
-                    end
-                end
-                if canPan == true then
-                    panning = true
-                    AttachPan()
-                    CrouchAnim()
-                    LocalPlayer.state:set("inv_busy", true, true)
-                    Wait(6000)
-                    ClearPedTasks(ped)
-                    GoldShake()
-                    local randomwait = math.random(12000,28000)
-                    Wait(randomwait)
-                    DeletePan(prop_goldpan)
-
-                        TriggerServerEvent('rsg-mining:server:washrocks')
-
-                    panning = false
-                    canPan = false
-                    LocalPlayer.state:set("inv_busy", false, true)
-                else
-                    lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
-                end
-            else
-                lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
-            end
-        else
-            lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
-        end
-    else
-        lib.notify({ title = 'Error', description = 'You dont have the required items', type = 'error' })
-    end
-end) ]]
-
+-- Wash Rock
 RegisterNetEvent('rsg-mining:client:StartRockPan')
 AddEventHandler('rsg-mining:client:StartRockPan', function()
     local ped = PlayerPedId()
@@ -142,17 +94,17 @@ AddEventHandler('rsg-mining:client:StartRockPan', function()
     local hasItem2 = RSGCore.Functions.HasItem(Config.itemGoldpan)
 
     if not hasItem or not hasItem2 then
-        lib.notify({ title = 'Error', description = 'You dont have the required items', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.missing_items'), type = 'error' })
         return
     end
 
     if mounted then
-        lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.mounted'), type = 'error' })
         return
     end
 
     if panning then
-        lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.already_rockpanning'), type = 'error' })
         return
     end
 
@@ -165,7 +117,7 @@ AddEventHandler('rsg-mining:client:StartRockPan', function()
     end
 
     if not canPan then
-        lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
+        lib.notify({ title = 'Info', description = Lang:t('primary.need_river'), type = 'inform' })
         return
     end
 
@@ -187,62 +139,6 @@ AddEventHandler('rsg-mining:client:StartRockPan', function()
     LocalPlayer.state:set("inv_busy", false, true)
 end)
 
-
---[[ RegisterNetEvent('rsg-mining:client:StartGoldPan')
-AddEventHandler('rsg-mining:client:StartGoldPan', function()
-    local ped = PlayerPedId()
-    local coords = GetEntityCoords(ped)
-    local water = Citizen.InvokeNative(0x5BA7A68A346A5A91, coords.x, coords.y, coords.z)
-    local mounted = IsPedOnMount(ped)
-    local hasItem = RSGCore.Functions.HasItem(Config.itemGoldpan)
-    local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
-    if success == true then
-        if hasItem then
-            if mounted == false then
-                if panning == false then
-                    for k,v in pairs(Config.WaterTypes) do 
-                        if water == Config.WaterTypes[k]["waterhash"] then
-                            canPan = true
-                            break
-                        end
-                    end
-                    if canPan == true then
-                        panning = true
-                        AttachPan()
-                        CrouchAnim()
-                        LocalPlayer.state:set("inv_busy", true, true)
-                        Wait(6000)
-                        ClearPedTasks(ped)
-                        GoldShake()
-                        local randomwait = math.random(12000,28000)
-                        Wait(randomwait)
-                        DeletePan(prop_goldpan)
-                        if hotspot == true then
-                            TriggerServerEvent('rsg-mining:server:hotspotrewardgoldpaning')
-                        else
-                            TriggerServerEvent('rsg-mining:server:rewardgoldpaning')
-                        end
-                        panning = false
-                        canPan = false
-                        LocalPlayer.state:set("inv_busy", false, true)
-                    else
-                        lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
-                    end
-                else
-                    lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
-                end
-            else
-                lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
-            end
-        else
-            lib.notify({ title = 'Error', description = 'You need a Goldpan to do this', type = 'error' })
-        end
-    else
-        SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
-        lib.notify({ title = 'Try again!', description = 'Have you never used a Goldpan?', type = 'error' })
-    end
-end) ]]
-
 RegisterNetEvent('rsg-mining:client:StartGoldPan')
 AddEventHandler('rsg-mining:client:StartGoldPan', function()
     local ped = PlayerPedId()
@@ -253,17 +149,17 @@ AddEventHandler('rsg-mining:client:StartGoldPan', function()
     local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
 
     if not hasItem then
-        lib.notify({ title = 'Error', description = 'You need a Goldpan to do this', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.missing_items'), type = 'error' })
         return
     end
 
     if mounted then
-        lib.notify({ title = 'Error', description = 'You are mounted', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.mounted'), type = 'error' })
         return
     end
 
     if panning then
-        lib.notify({ title = 'Need item', description = 'You are already goldpanning', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.already_goldpanning'), type = 'error' })
         return
     end
 
@@ -276,13 +172,13 @@ AddEventHandler('rsg-mining:client:StartGoldPan', function()
     end
 
     if not canPan then
-        lib.notify({ title = 'Need river', description = 'You need the river to goldpan', type = 'primary' })
+        lib.notify({ title = 'Info', description = Lang:t('primary.need_river'), type = 'inform' })
         return
     end
 
     if not success then
         SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
-        lib.notify({ title = 'Try again!', description = 'Have you never used a Goldpan?', type = 'error' })
+        lib.notify({ title = 'Error', description = Lang:t('error.failed_goldpanning'), type = 'error' })
         return
     end
 

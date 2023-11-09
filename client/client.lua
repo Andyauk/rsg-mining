@@ -35,13 +35,13 @@ Citizen.CreateThread(function()
                             TriggerEvent('rsg-mining:client:StartMining')
                         end,
                         icon = "fas fa-comments-dollar",
-                        label = 'Start ' .. v.name,
+                        label = Lang:t('menu.start') .. v.name,
                     },
                 },
                 distance = 3,
             })
         elseif v.target == false then
-            exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds[Config.KeyMining], 'Start ' .. v.name, {
+            exports['rsg-core']:createPrompt(v.location, v.coords, RSGCore.Shared.Keybinds[Config.KeyMining], Lang:t('menu.start') .. v.name, {
                 type = 'client',
                 event = 'rsg-mining:client:StartMining'
             })
@@ -80,7 +80,7 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
                         TriggerEvent('rsg-mining:client:MineAnimation')
                         LocalPlayer.state:set("inv_busy", true, true)
 
-                        RSGCore.Functions.Progressbar("mining", "Mining...", 30000, false, true,
+                        RSGCore.Functions.Progressbar("mining", Lang:t('success.mining_action'), 30000, false, true,
                         {
                             disableMovement = true,
                             disableCarMovement = true,
@@ -101,14 +101,14 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
                         end)
                     end
                 else
-                    lib.notify({ title = 'Error', description = 'You don\'t have a pickaxe!', type = 'error' })
+                    lib.notify({ title = 'Error', description = Lang:t('error.you_dont_have_pickaxe'), type = 'error' })
                 end
             else
-                lib.notify({ title = 'Inform', description = 'You are already doing something!', type = 'primary' })
+                lib.notify({ title = 'Error', description = Lang:t('error.you_are_busy'), type = 'error' })
             end
         else
             SetPedToRagdoll(PlayerPedId(), 1000, 1000, 0, 0, 0, 0)
-            lib.notify({ title = 'Try again!', description = 'Have you never used a pickaxe?', type = 'error' })
+            lib.notify({ title = 'Error', description = Lang:t('error.failed_mining'), type = 'error' })
         end
 end)
 
