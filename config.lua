@@ -73,7 +73,7 @@ Config.RewardPaning = {
 ---------------------------
 
 Config.itemSmelt = "goldsmelt"
-Config.UseGoldSmeltItem = false -- if false please remember to take out goldsmelt item if not using it.
+Config.UseGoldSmeltItem = false -- if false please remember to take out goldsmelt item if not using it and uncomment lines below in ```Config.SmeltOptions``` for gold smelt at founderies.
 Config.AllowSmeltCanceling = true
 
 Config.SmeltLocations = true -- can active 'true' / desactive 'false'
@@ -85,7 +85,6 @@ Config.SmeltingLocations = {
 }
 
 Config.SmeltOptions = {
-
     {
         category = "Ore",
         smelttime = 20000,
@@ -142,6 +141,34 @@ Config.SmeltOptions = {
         receive = "silver",
         giveamount = 1
     },
+    --[[
+    {
+        category = "Gold",
+        smelttime = 20000,
+        smeltitems = {
+            [1] = { item = "largenugget", amount = 20 },
+        },
+        receive = "goldbar",
+        giveamount = 1
+    },
+    {
+        category = "Gold",
+        smelttime = 20000,
+        smeltitems = {
+            [1] = { item = "mediumnugget", amount = 40 },
+        },
+        receive = "goldbar",
+        giveamount = 1
+    },
+    {
+        category = "Gold",
+        smelttime = 20000,
+        smeltitems = {
+            [1] = { item = "smallnugget", amount = 80 },
+        },
+        receive = "goldbar",
+        giveamount = 1
+    }, --]]
 }
 
 ---------------------------
