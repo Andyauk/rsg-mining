@@ -73,7 +73,7 @@ Config.RewardPaning = {
 ---------------------------
 
 Config.itemSmelt = "goldsmelt"
-Config.UseGoldSmeltItem = true
+Config.UseGoldSmeltItem = false -- if false please remember to take out goldsmelt item if not using it.
 Config.AllowSmeltCanceling = true
 
 Config.SmeltLocations = true -- can active 'true' / desactive 'false'

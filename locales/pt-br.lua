@@ -25,7 +25,7 @@ success = {
     mining_action = 'Mining...',  -- Please translate
     jack_pot_fever = 'Bingo !! Got Some Goodies!',  -- Please translate
     jack_pot_medium = 'Got Some Good Gold.',  -- Please translate
-    jack_pot_small = 'I guess this will do.'  -- Please translate
+    jack_pot_small = 'I guess this will do.',  -- Please translate
     rock_destroyed_but_item = 'Found something of use!',  -- Please translate
 },
 primary = {

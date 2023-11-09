@@ -23,7 +23,7 @@ local Translations = {
         mining_action = 'Mining...',
         jack_pot_fever = 'Bingo !! Got Some Goodies!',
         jack_pot_medium = 'Got Some Good Gold.',
-        jack_pot_small = 'I guess this will do.'
+        jack_pot_small = 'I guess this will do.',
         rock_destroyed_but_item = 'Found something of use!',
     },
     primary = {

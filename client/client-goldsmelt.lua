@@ -253,5 +253,7 @@ AddEventHandler('rsg-mining:client:setupgoldsmelt', function()
             lib.notify({ title = 'Info', description = Lang:t('success.item_set_up'), type = 'inform' })
             goldsmelt = true
         end
-    else end
+    else
+        print('Config.UseGoldSmeltItem is set to false genius!') 
+    end
 end, false)

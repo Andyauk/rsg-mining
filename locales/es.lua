@@ -23,7 +23,7 @@ local Translations = {
         mining_action = 'Minando...',
         jack_pot_fever = 'Bingo !! La suerte esta conmigo!',
         jack_pot_medium = 'No es Mucho Pero es mejor que nada.',
-        jack_pot_small = 'Algo es Algo.'
+        jack_pot_small = 'Algo es Algo.',
         rock_destroyed_but_item = 'Algo de algun uso!',
     },
     primary = {
@@ -47,7 +47,7 @@ local Translations = {
 }
 
 if GetConvar('rsg_locale', 'en') == 'es' then
-  Lang = Locale:new({
+    Lang = Locale:new({
       phrases = Translations,
       warnOnMissing = true,
       fallbackLang = Lang,
