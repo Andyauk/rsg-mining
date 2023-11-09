@@ -73,7 +73,7 @@ Config.RewardPaning = {
 ---------------------------
 
 Config.itemSmelt = "goldsmelt"
-Config.UseGoldSmeltItem = false -- if false please remember to take out goldsmelt item if not using it and uncomment lines below in ```Config.SmeltOptions``` for gold smelt at founderies.
+Config.UseGoldSmeltItem = true -- if false please remember to take out goldsmelt item if not using it and uncomment lines below in ```Config.SmeltOptions``` for gold smelt at founderies.
 Config.AllowSmeltCanceling = true
 
 Config.SmeltLocations = true -- can active 'true' / desactive 'false'
@@ -168,7 +168,7 @@ Config.SmeltOptions = {
         },
         receive = "goldbar",
         giveamount = 1
-    }, --]]
+    },--]]
 }
 
 ---------------------------
