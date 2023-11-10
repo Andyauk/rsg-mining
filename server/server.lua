@@ -49,7 +49,7 @@ end)
 -- use rock
 RSGCore.Functions.CreateUseableItem(Config.itemRock, function(source, item)
     local src = source
-	TriggerClientEvent('rsg-mining:client:StartRockPan', src, item.name)
+    TriggerClientEvent('rsg-mining:client:StartRockPan', src, item.name)
 end) 
 
 ---------------------------
