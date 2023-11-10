@@ -7,11 +7,14 @@
 - PolyZone -- Click [here](https://github.com/mkafrin/PolyZone/releases) to go to the releases page and download the latest release
 
 # Installation
+- Additional Information: With this repository it is not necessary to have in server
+- remove to your server.cfg file : rsg-goldpaning
+- remove to your server.cfg file : rsg-goldsmelt
+
 - ensure that the dependancies are added and started
 - add rsg-mining to your resources folder
 - add items to your "\rsg-core\shared\items.lua"
 - add images to your "\rsg-inventory\html\images"
-
 
 # Starting the resource
 - add the following to your server.cfg file : ensure rsg-mining
