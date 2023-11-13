@@ -59,7 +59,11 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
     local player = PlayerPedId()
     local hasItem = RSGCore.Functions.HasItem(Config.itemMining, 1)
     local chance = math.random(1, 100)
-        local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+        if Config.DoMiniGame == true then
+            local success = lib.skillCheck({{areaSize = 50, speedMultiplier = 0.5}}, {'w', 'a', 's', 'd'})
+        else
+            success = true
+        end
         if success == true then
             if miningstarted == false then
                 if hasItem then
@@ -80,7 +84,7 @@ RegisterNetEvent('rsg-mining:client:StartMining', function()
                         TriggerEvent('rsg-mining:client:MineAnimation')
                         LocalPlayer.state:set("inv_busy", true, true)
 
-                        RSGCore.Functions.Progressbar("mining", Lang:t('success.mining_action'), 30000, false, true,
+                        RSGCore.Functions.Progressbar("mining", Lang:t('success.mining_action'), Config.MiningTime, false, true,
                         {
                             disableMovement = true,
                             disableCarMovement = true,

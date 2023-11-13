@@ -4,7 +4,8 @@
 
 # Dependancies
 - rsg-core
-- PolyZone -- Click [here](https://github.com/mkafrin/PolyZone/releases) to go to the releases page and download the latest release
+- ox_lib
+- PolyZone
 
 # Installation
 - Additional Information: With this repository it is not necessary to have in server
@@ -32,6 +33,6 @@
 - https://github.com/TeToKaZ/rsg-mining
 
 # Credits
-- RexShack / RexShack#3041 (for the original)
-- killswitch3k / TeToKaZ
-- Sadicius / Sadicius#1150 / https://linktr.ee/sadicius
+- RexShack
+- killswitch3k
+- Sadicius

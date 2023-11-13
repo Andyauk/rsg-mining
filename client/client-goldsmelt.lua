@@ -52,7 +52,7 @@ local categoryMenus = {}
 for _, v in ipairs(Config.SmeltOptions) do
     local smeltitemsMetadata = {}
     local setheader = RSGCore.Shared.Items[tostring(v.receive)].label
-    local itemimg = "nui://"..Config.img..RSGCore.Shared.Items[tostring(v.receive)].image
+    local itemimg = "nui://"..Config.Img..RSGCore.Shared.Items[tostring(v.receive)].image
     print(setheader, v.receive)
     for i, smeltitem in ipairs(v.smeltitems) do
         table.insert(smeltitemsMetadata, { label = RSGCore.Shared.Items[smeltitem.item].label, value = smeltitem.amount })

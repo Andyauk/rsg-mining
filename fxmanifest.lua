@@ -3,7 +3,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 game 'rdr3'
 
 description 'rsg-mining'
-version '1.0.5'
+version '1.0.6'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -24,6 +24,12 @@ client_script {
 
 server_scripts {
     'server/server.lua',
+}
+
+dependencies {
+    'rsg-core',
+    'ox_lib',
+    'PolyZone'
 }
 
 lua54 'yes'
