@@ -53,7 +53,7 @@ for _, v in ipairs(Config.SmeltOptions) do
     local smeltitemsMetadata = {}
     local setheader = RSGCore.Shared.Items[tostring(v.receive)].label
     local itemimg = "nui://"..Config.Img..RSGCore.Shared.Items[tostring(v.receive)].image
-    print(setheader, v.receive)
+
     for i, smeltitem in ipairs(v.smeltitems) do
         table.insert(smeltitemsMetadata, { label = RSGCore.Shared.Items[smeltitem.item].label, value = smeltitem.amount })
     end
@@ -183,7 +183,6 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
             }) then
                 -- Cooking was successful
                 TriggerServerEvent('rsg-mining:server:finishsmelting', smeltitems, receive, giveamount, smeltamount)
-
 
                 -- Stop the animation
                 StopAnimTask(ped, animDict, animName, 1.0)
