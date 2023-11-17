@@ -3,6 +3,7 @@ local miningstarted = false
 local mining
 local mineAnimation = 'amb_work@world_human_pickaxe@wall@male_d@base'
 local anim = 'base'
+local inRange = false
 
 local LoadAnimDict = function(dict)
     local isLoaded = HasAnimDictLoaded(dict)
@@ -20,9 +21,6 @@ end
 
 Citizen.CreateThread(function()
     for _, v in pairs(Config.MiningLocations) do
-        if v.showmarker == true then
-            Citizen.InvokeNative(0x2A32FAA57B937173, 0x07DCE236, v.coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 255, 215, 0, 155, false, false, false, 1, false, false, false)
-        end
         if v.target == true then
             exports['rsg-target']:AddCircleZone(v.location, v.coords, 2, {
                 name = v.location,
@@ -51,6 +49,27 @@ Citizen.CreateThread(function()
             SetBlipSprite(MiningBlip, 1220803671)
             SetBlipScale(MiningBlip, 0.8)
             Citizen.InvokeNative(0x9CB1A1623062F402, MiningBlip, v.name)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(0)
+        for k,v in pairs(Config.MiningLocations) do
+            if not v.showmarker then goto continue end
+            local player = PlayerPedId()
+            local pos = GetEntityCoords(player)
+            local dist = #(pos - v.coords)
+            inRange = false
+            if dist < Config.MarkerShowDistance then
+                inRange = true
+                Citizen.InvokeNative(0x2A32FAA57B937173, 0x07DCE236, v.coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 255, 215, 0, 155, false, false, false, 1, false, false, false)
+            end
+            if not inRange then
+                Wait(2500)
+            end
+            ::continue::
         end
     end
 end)

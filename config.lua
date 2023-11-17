@@ -75,8 +75,8 @@ Config.RewardPaning = {
 Config.itemSmelt = "goldsmelt"
 Config.UseGoldSmeltItem = true -- if false please remember to take out goldsmelt item if not using it and uncomment lines below in ```Config.SmeltOptions``` for gold smelt at founderies.
 Config.AllowSmeltCanceling = true
-
 Config.SmeltLocations = true -- can active 'true' / desactive 'false'
+
 Config.SmeltingLocations = {
     { name = 'Smelter', coords = vector3(-370.5368, 795.87225, 115.66062), heading = 125.98059, minZ = 114.66062, maxZ = 117.66062, showblip = true },
     { name = 'Smelter', coords = vector3(-2396.335, -2376.617, 61.053844), heading = 355.44912, minZ = 59.29764,  maxZ = 63.29764,  showblip = true }, 
@@ -182,6 +182,7 @@ Config.DoMiniGame = false
 Config.SmallRewardAmount = 1
 Config.MediumRewardAmount = 2
 Config.MiningTime = 30000
+Config.MarkerShowDistance = 10.0
 
 -- set the item rewards
 Config.RareAward = {
@@ -209,32 +210,32 @@ Config.Normal = {
 -- mining locations
 
 Config.MiningLocations = {
-    {name = 'Mining', location = 'mining1',  coords = vector3(-1424.091, 1176.6002, 226.3431), showblip = true,  showmarker = false, target = false},
-    {name = 'Mining', location = 'mining2',  coords = vector3(-1417.508, 1171.145, 226.57142), showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining3',  coords = vector3(-1425.11, 1173.34, 226.22),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining4',  coords = vector3(-1430.49, 1176.11, 226.33),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining5',  coords = vector3(-1422.86, 1187.35, 225.47),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining6',  coords = vector3(-1414.73, 1185.32, 225.48),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining7',  coords = vector3(-1411.92, 1182.53, 225.55),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining8',  coords = vector3(-1409.72, 1190.29, 225.46),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining9',  coords = vector3(-1405.99, 1194.99, 225.37),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining10', coords = vector3(-1415.83, 1197.11, 225.14),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining11', coords = vector3(-1420.33, 1201.63, 225.36),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining12', coords = vector3(-1429.2, 1202.06, 225.53),       showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining13', coords = vector3(-1421.24, 1217.51, 222.45),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining14', coords = vector3(-1412.51, 1212.7, 222.42),       showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining15', coords = vector3(-1406.02, 1207.38, 222.87),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining16', coords = vector3(-1415.12, 1201.39, 224.71),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining17', coords = vector3(-1444.72, 1202.9, 226.33),       showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining18', coords = vector3(-1446.54, 1195.84, 226.35),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining19', coords = vector3(-1444.63, 1192.29, 226.44),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining20', coords = vector3(-1400.83, 1175.13, 222.08),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining21', coords = vector3(-1396.7, 1170.83, 222.19),       showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining22', coords = vector3(-1393.61, 1171.83, 222.58),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining23', coords = vector3(-1394.68, 1169.74, 222.38),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining24', coords = vector3(-1387.02, 1182.16, 222.21),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining25', coords = vector3(-1388.55, 1177.58, 221.88),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining26', coords = vector3(-1392.99, 1186.0, 222.01),       showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining27', coords = vector3(-1418.91, 1193.09, 225.37),      showblip = false, showmarker = false, target = false},
-    {name = 'Mining', location = 'mining28', coords = vector3(-1393.31, 1185.81, 221.96),      showblip = false, showmarker = false, target = false},
+    {name = 'Mining', location = 'mining1',  coords = vector3(-1424.091, 1176.6002, 226.3431), showblip = true,  showmarker = true, target = false},
+    {name = 'Mining', location = 'mining2',  coords = vector3(-1417.508, 1171.145, 226.57142), showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining3',  coords = vector3(-1425.11, 1173.34, 226.22),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining4',  coords = vector3(-1430.49, 1176.11, 226.33),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining5',  coords = vector3(-1422.86, 1187.35, 225.47),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining6',  coords = vector3(-1414.73, 1185.32, 225.48),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining7',  coords = vector3(-1411.92, 1182.53, 225.55),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining8',  coords = vector3(-1409.72, 1190.29, 225.46),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining9',  coords = vector3(-1405.99, 1194.99, 225.37),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining10', coords = vector3(-1415.83, 1197.11, 225.14),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining11', coords = vector3(-1420.33, 1201.63, 225.36),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining12', coords = vector3(-1429.2, 1202.06, 225.53),       showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining13', coords = vector3(-1421.24, 1217.51, 222.45),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining14', coords = vector3(-1412.51, 1212.7, 222.42),       showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining15', coords = vector3(-1406.02, 1207.38, 222.87),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining16', coords = vector3(-1415.12, 1201.39, 224.71),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining17', coords = vector3(-1444.72, 1202.9, 226.33),       showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining18', coords = vector3(-1446.54, 1195.84, 226.35),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining19', coords = vector3(-1444.63, 1192.29, 226.44),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining20', coords = vector3(-1400.83, 1175.13, 222.08),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining21', coords = vector3(-1396.7, 1170.83, 222.19),       showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining22', coords = vector3(-1393.61, 1171.83, 222.58),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining23', coords = vector3(-1394.68, 1169.74, 222.38),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining24', coords = vector3(-1387.02, 1182.16, 222.21),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining25', coords = vector3(-1388.55, 1177.58, 221.88),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining26', coords = vector3(-1392.99, 1186.0, 222.01),       showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining27', coords = vector3(-1418.91, 1193.09, 225.37),      showblip = false, showmarker = true, target = false},
+    {name = 'Mining', location = 'mining28', coords = vector3(-1393.31, 1185.81, 221.96),      showblip = false, showmarker = true, target = false},
 }
