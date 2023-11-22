@@ -56,7 +56,7 @@ end)
 CreateThread(function()
     while true do
         Wait(0)
-        for k,v in pairs(Config.MiningLocations) do
+        for _,v in pairs(Config.MiningLocations) do
             if not v.showmarker then goto continue end
             local player = PlayerPedId()
             local pos = GetEntityCoords(player)
@@ -65,9 +65,6 @@ CreateThread(function()
             if dist < Config.MarkerShowDistance then
                 inRange = true
                 Citizen.InvokeNative(0x2A32FAA57B937173, 0x07DCE236, v.coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 255, 215, 0, 155, false, false, false, 1, false, false, false)
-            end
-            if not inRange then
-                Wait(2500)
             end
             ::continue::
         end
