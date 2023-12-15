@@ -189,7 +189,7 @@ Config.RareAward = {
     'diamond',
     'ruby',
     'emerald',
-    'goldore',
+    'gold_ore',
     'silver_ore'
 }
 
