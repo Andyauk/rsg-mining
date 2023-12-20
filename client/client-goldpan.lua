@@ -117,7 +117,7 @@ AddEventHandler('rsg-mining:client:StartRockPan', function()
     end
 
     if not canPan then
-        lib.notify({ title = 'Info', description = Lang:t('primary.need_river'), type = 'primary' })
+        lib.notify({ title = 'Info', description = Lang:t('primary.need_river'), type = 'inform' })
         return
     end
 
