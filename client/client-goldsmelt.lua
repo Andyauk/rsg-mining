@@ -189,7 +189,7 @@ RegisterNetEvent('rsg-mining:client:smeltitem', function(title, smeltitems, smel
                 LocalPlayer.state:set("inv_busy", false, true)
             else
                 -- Handle cancelation or failure
-                RSGCore.Functions.Notify(Lang:t('primary.cancelation_failure'), 'primary')
+                lib.notify({ title = 'Inform', description = Lang:t('primary.cancelation_failure'), type = 'inform' })
 
                 -- Cancel the animation
                 StopAnimTask(ped, animDict, animName, 1.0)
