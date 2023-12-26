@@ -2,6 +2,7 @@
     ['shovel']  = {['name'] = 'shovel',  ['label'] = 'Shovel',  ['weight'] = 100, ['type'] = 'item', ['image'] = 'shovel.png',  ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'equipment for digging'},
     ['axe']     = {['name'] = 'axe',     ['label'] = 'Axe',     ['weight'] = 100, ['type'] = 'item', ['image'] = 'axe.png',     ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'equipment for chopping'},
     ['pickaxe'] = {['name'] = 'pickaxe', ['label'] = 'PickAxe', ['weight'] = 100, ['type'] = 'item', ['image'] = 'pickaxe.png', ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'equipment for mining'},
+    ['goldsmelt']    = {['name'] = 'goldsmelt',    ['label'] = 'Gold Smelt',    ['weight'] = 300, ['type'] = 'item', ['image'] = 'goldsmelt.png',    ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'equipment for gold smelting'},
 
     -- materials
     ['copper']       = {['name'] = 'copper',       ['label'] = 'Copper',       ['weight'] = 100,  ['type'] = 'item', ['image'] = 'copper.png',       ['unique'] = false, ['useable'] = true, ['shouldClose'] = true, ['combinable'] = nil, ['level'] = 0, ['description'] = 'crafting material'},
